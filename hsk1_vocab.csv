@@ -1,1 +1,519 @@
+STT	Tiếng Trung	Pinyin	Từ loại	Dịch nghĩa
+1	爱	ài	động từ	yêu
+2	爱好	àihào	động từ / danh từ	mê, ham, yêu thích / sở thích
+3	八	bā	số từ	tám
+4	爸爸｜爸	bàba｜ bà	danh từ	bố
+5	吧	ba	trợ từ	đi, nhé, nhỉ (đứng cuối câu)
+6	白	bái	tính từ	trắng
+7	白天	báitiān	danh từ	ban ngày
+8	百	bǎi	số từ	trăm
+9	班	bān	danh từ / lượng từ	lớp, lớp học / lớp, ca (làm việc)
+10	半	bàn	số từ	một nửa
+11	半年	bàn nián		nửa năm
+12	半天	bàntiān		nửa ngày
+13	帮	bāng	động từ	giúp đỡ
+14	帮忙	bāng//máng		giúp đỡ
+15	包	bāo	danh từ / lượng từ / động từ	túi, bao, ví / bao, gói, túi / bọc / bao gồm
+16	包子	bāozi	danh từ	bánh bao
+17	杯	bii	lượng từ	cốc, ly
+18	杯子	biizi	danh từ	chiếc cốc, ly
+19	北	bii	danh từ	bắc (hướng bắc)
+20	北边	biibian	danh từ	phía bắc, hướng bắc
+21	北京	Biijīng	danh từ	Bắc Kinh
+22	本	bin	lượng từ	"vở, tập, cuốn
+(dùng cho sách vở sổ sách)"
+23	本子	binzi	danh từ	vở, tập, cuốn vở
+24	比	bǐ	giới từ / động từ	so, hơn, so với / so sánh / sánh bằng / ra hiệu
+25	别	bii	phó từ	chớ, đừng, không được
+26	别的	biide	đại từ	khác, cái khác
+27	别人	bii·rin	đại từ	người khác
+28	病	bìng	danh từ / động từ	bệnh, ốm đau / bị ốm, bị bệnh
+29	病人	bìngrin	danh từ	bệnh nhân
+30	不大	bú dà		ít khi / không quá, không ... lắm
+31	不对	búduì	tính từ	không đúng
+32	不客气	bú kiqì		không có gì (đáp lại lời cảm ơn)
+33	不用	búyòng	phó từ	không cần
+34	不	bù	phó từ	chả, chẳng,  không
+35	菜	cài	danh từ	món ăn, rau củ
+36	茶	chá	danh từ	trà
+37	差	chà	động từ / tính từ	thiếu, kém, không đủ / kém, tệ, không tốt
+38	常	cháng	phó từ	thường, thường xuyên
+39	常常	chángcháng	phó từ	thường, thường thường
+40	唱	chàng	động từ	hát, ca, kêu
+41	唱歌	chàng//gi		hát
+42	车	chi	danh từ	xe
+43	车票	chipiào	danh từ	vé xe
+44	车上	chi shang		trên xe
+45	车站	chizhàn	danh từ	ga, bến xe
+46	吃	chī	động từ	ăn
+47	吃饭	chī//fàn		ăn cơm
+48	出	chū	động từ	ra, xuất
+49	出来	chū// · lái		đi ra, ra đây
+50	出去	chū// · qù		ra ngoài
+51	穿	chuān	động từ	mặc, đi, mang, đeo
+52	床	chuáng	danh từ	giường
+53	次	cì	lượng từ	lần
+54	从	cóng	giới từ	từ, theo
+55	错	cuò	tính từ / danh từ	sai, nhầm / tệ, kém / sai lầm, lỗi sai
+56	打	dǎ	động từ	gõ, đập, đánh
+57	打车	dǎ//chi		bắt xe, gọi xe taxi, bắt taxi
+58	打电话	dǎ diànhuà		gọi điện thoại
+59	打开	dǎ//kāi		mở ra, kéo ra, tháo gỡ
+60	打球	dǎ qiú		đánh bóng
+61	大	dà	tính từ	lớn, to
+62	大学	dàxui	danh từ	đại học
+63	大学生	dàxuishing	danh từ	sinh viên
+64	到	dào	động từ	đến
+65	得到	di//dào		được, đạt được, nhận được
+66	地	de	trợ từ	"mà, một cách (diễn tả cách thức hành động
+theo tính từ, nhấn mạnh trạng thái)"
+67	的	de	trợ từ	"của, thuộc (dùng sau định ngữ, kết hợp định ngữ với danh từ) /
+cái, vật, người (từ dùng thay cho người và vật đã đề cập trước đó) /
+dùng để nhấn mạnh hành động, sự việc đã thực hiện /
+dùng ở cuối câu để khẳng định ngữ khí"""
+68	等	ding	động từ	đợi
+69	地	dì	danh từ	đất, trái đất, địa cầu
+70	地点	dìdiǎn	danh từ	địa điểm
+71	地方	dìfang	danh từ	nơi, chỗ
+72	地上	dìshang		mặt đất, dưới đất
+73	地图	dìtú	danh từ	bản đồ
+74	弟弟 | 弟	dìdi | dì	danh từ	em trai
+75	"第（第
+二）"	dì (dì-ir)	tiền tố	thứ tự, thứ hạng (thứ hạng 2)
+76	点	diǎn	lượng từ / động từ / danh từ	giờ (trong thời gian) / điều, điểm / đặt, gọi (món) / chấm / giọt / điểm / phẩy / giờ
+77	电	diàn	danh từ	điện, pin, điện năng
+78	电话	diànhuà	danh từ	điện thoại, cuộc điện thoại, cuộc gọi đến
+79	电脑	diànnǎo	danh từ	máy tính
+80	电视	diànshì	danh từ	ti vi, vô tuyến, truyền hình
+81	电视机	diànshìjī	danh từ	ti vi, máy thu hình, máy truyền hình
+82	电影	diànyǐng	danh từ	điện ảnh
+83	电影院	diànyǐngyuàn	danh từ	rạp chiếu phim
+84	东	dōng	danh từ	đông (hướng đông)
+85	东边	dōngbian	danh từ	phía đông, hướng đông
+86	东西	dōngxi	danh từ	đồ vật, thứ
+87	动	dòng	động từ	động, chuyển động, lay động
+88	动作	dòngzuò	danh từ	động tác, hành động
+89	都	dōu	phó từ	đều
+90	读	dú	động từ	đọc
+91	读书	dú//shū		đọc sách
+92	对	duì	tính từ	đúng
+93	对不起	duìbuqǐ	động từ	xin lỗi
+94	多	duō	tính từ / đại từ	nhiều, lắm / bao nhiêu
+95	多少	duōshao	đại từ	bao nhiêu
+96	饿	i	tính từ / động từ	đói / bỏ đói, để đói
+97	儿子	irzi	danh từ	con trai
+98	二	ir	số từ	số 2
+99	饭	fàn	danh từ	cơm, bữa
+100	饭店	fàndiàn	danh từ	nhà hàng
+101	房间	fángjiān	danh từ	căn phòng, buồng
+102	房子	fángzi	danh từ	nhà, nhà cửa
+103	放	fàng	động từ	để, cất, đặt
+104	放假	fàng//jià		nghỉ, nghỉ định kỳ
+105	放学	fàng//xui		tan học
+106	飞	fii	động từ	bay
+107	飞机	fiijī	danh từ	máy bay
+108	非常	fiicháng	phó từ	rất, cực kỳ
+109	分	fin	danh từ / lượng từ	phân số / phần, phân (đo chiều dài, trọng lượng, lãi suất) / sào (đo diện tích) / xu (tiền tệ) / phút (đo thời gian, kinh tuyến, vĩ tuyến)
+110	风	fing	danh từ	gió
+111	干	gān	tính từ	khô, cạn
+112	干净	gānjìng	tính từ	sạch sẽ, gọn gàng
+113	干	gàn	động từ	làm, làm việc, làm cái gì đó
+114	干什么	gàn shinme		làm gì, tại sao
+115	高	gāo	tính từ	cao
+116	高兴	gāoxìng	tính từ	vui vẻ, phấn chấn, cao hứng
+117	告诉	gàosu	động từ	kể, bảo, nói cho
+118	哥哥	gige|gi	danh từ	anh, anh trai
+119	歌	gi	danh từ	ca khúc, bài hát, bài ca
+120	个	gi	lượng từ	cái, chiếc
+121	给	gii	động từ / giới từ	cho ai làm việc gì đó / đưa cho / tới, cho (hành động hướng tới ai) / đưa cho
+122	跟	gin	giới từ / liên từ / động từ	với, cùng, so với / và, cùng / theo, gả
+123	工人	gōngrin	danh từ	công nhân
+124	工作	gōngzuò	động từ / danh từ	làm việc / việc làm / nhiệm vụ
+125	关	guān	động từ	đóng, tắt, khép
+126	关上	guānshang		đóng lại, tắt, khóa
+127	贵	guì	tính từ	đắt, quý giá
+128	国	guó	danh từ	nước, quốc
+129	国家	guójiā	danh từ	đất nước, nhà nước, quốc gia, lãnh thổ
+130	国外	guó wài		nước ngoài
+131	过	guò	động từ	qua, vượt qua
+132	还	hái	phó từ	còn, vẫn
+133	还是	háishi	phó từ / liên từ	vẫn còn, như thế, hãy cứ / hay, hay là
+134	还有	hái yǒu		còn có, vẫn còn
+135	孩子	háizi	danh từ	trẻ em, đứa trẻ
+136	汉语	Hànyǔ	danh từ	tiếng Hán
+137	汉字	Hànzì	danh từ	chữ Hán
+138	好	hǎo	tính từ	ổn, hay, tốt, lành
+139	好吃	hǎochī	tính từ	ngon
+140	好看	hǎokàn	tính từ	đẹp, xinh, coi được, hay, thú vị
+141	好听	hǎotīng	tính từ	hay, êm tai, dễ nghe
+142	好玩儿	hǎowánr	tính từ	hay, thú vị, thích thú
+143	号	hào	danh từ / lượng từ	số thứ tự, số ngày, số cỡ / người / hạng, loại / vụ (giao dịch mua bán)
+144	喝	hi	động từ	uống
+145	和	hi	giới từ / liên từ	liên quan / với, cùng / và, với
+146	很	hin	phó từ	rất
+147	后	hòu	danh từ	sau, phía sau, mặt sau
+148	后边	hòubian	danh từ	phía sau, đằng sau
+149	后天	hòutiān	danh từ	ngày kia
+150	花	huā	danh từ	hoa
+151	话	huà	danh từ	lời nói, câu nói
+152	坏	huài	tính từ	xấu, không tốt, quá, hết sức
+153	还	huán	động từ	về, trả lại, đáp lại
+154	回	huí	động từ	quay về, trở về
+155	回答	huídá	động từ / danh từ	đáp, trả lời / câu trả lời
+156	回到	huídào	động từ	trở về, quay lại
+157	回家	huí jiā		về nhà
+158	回来	huí//· lái		về, trở lại, quay về
+159	回去	huí//· qù		về, trở lại, quay về (đi khỏi chỗ người nói)
+160	会	huì	động từ	biết, có thể, có khả năng
+161	火车	huǒchi	danh từ	tàu hỏa
+162	机场	jīchǎng	danh từ	sân bay
+163	机票	jīpiào	danh từ	vé máy bay
+164	鸡蛋	jīdàn	danh từ	trứng gà
+165	几	jǐ	số từ / đại từ	mấy, vài / bao nhiêu, mấy
+166	记	jì	động từ	nhớ, ghi nhớ, ghi chép
+167	记得	jìde	động từ	nhớ, nhớ lại, nhớ được
+168	记住	jìzhù		nhớ, ghi nhớ, nhớ kĩ
+169	家	jiā	danh từ / lượng từ	nhà, gia đình / hiệu, tiệm, nhà
+170	家里	jiā li		trong nhà, trong gia đình
+171	家人	jiārin	danh từ	người nhà, người thân
+172	间	jiān	lượng từ	căn, phòng
+173	见	jiàn	động từ	gặp, thấy
+174	见面	jiàn//miàn		gặp mặt
+175	教	jiāo	động từ	dạy
+176	叫	jiào	động từ	kêu, gọi
+177	教学楼	jiàoxuilóu	danh từ	toà nhà giảng dạy
+178	姐姐｜姐	jiijie｜ jii	danh từ	chị gái
+179	介绍	jiishào	động từ	giới thiệu, đề xuất
+180	今年	jīnnián	danh từ	năm nay
+181	今天	jīntiān	danh từ	hôm nay
+182	进	jìn	động từ	vào
+183	进来	jìn//· lái		vào, đi vào
+184	进去	jìn//· qù		vào trong, đi vào, hướng vào trong
+185	九	jiǔ	số từ	số 9
+186	就	jiù	phó từ	thì, liền, cứ, ngay, đã, rồi, chính là, chỉ, tận
+187	觉得	juide	động từ	cảm thấy, nghĩ, cho rằng
+188	开	kāi	động từ	mở, bật
+189	开车	kāi//chi		lái xe
+190	开会	kāi//huì		họp
+191	开玩笑	kāi wánxiào		chọc, trêu, đùa, giỡn, giễu, nói đùa
+192	看	kàn	động từ	xem, nhìn
+193	看病	kàn//bìng		khám bệnh
+194	看到	kàndào		nhìn thấy
+195	看见	kàn//jiàn		trông thấy
+196	考	kǎo	động từ	thi, kiểm tra
+197	考试	kǎo//shì		kỳ thi
+198	渴	ki	tính từ	khát
+199	课	ki	danh từ	môn học, tiết học
+200	课本	kibin	danh từ	sách, sách vở, sách giáo khoa
+201	课文	kiwin	danh từ	bài khóa, bài văn
+202	口	kǒu	lượng từ / danh từ	"miếng, ngụm, hơi / người, thành viên trong
+gia đình / miệng / lưỡi (dao, kiếm, kéo) / bộ phận"
+203	块	kuài	danh từ / lượng từ	viên, hòn, cục, tảng, thỏi, miếng / viên, bánh, đống, khối, miếng, đồng (tiền)
+204	快	kuài	tính từ / phó từ	nhanh, mau, chóng / sắp, gần, mau
+205	来	lái	động từ	đến, tới
+206	来到	láidào	động từ	đến, đạt được, đạt đến
+207	老	lǎo	tính từ	già
+208	老人	lǎorin	danh từ	người già
+209	老师	lǎoshī	danh từ	giáo viên
+210	了	le	trợ từ	đã, rồi
+211	累	lii	tính từ	mệt
+212	冷	ling	tính từ	lạnh
+213	里	lǐ	danh từ	bên trong, phía trong
+214	里边	lǐbian	danh từ	trong, bên trong, phía trong
+215	两	liǎng	số từ	hai (chỉ số lượng)
+216	零|〇	líng|líng	số từ	số 0
+217	六	liù	số từ	số 6
+218	楼	lóu	danh từ	tòa nhà, lầu
+219	楼上	lóu shàng		tầng trên, lầu trên
+220	楼下	lóu xià		tầng dưới, lầu dưới
+221	路	lù	danh từ / lượng từ	đường, tuyến đường / loại / hàng, đội
+222	路口	lùkǒu	danh từ	ngã, giao lộ, nút giao
+223	路上	lùshang	danh từ	trên đường, dọc đường
+224	妈妈|妈	māma|mā	danh từ	mẹ
+225	马路	mǎlù	danh từ	đường cái, đường quốc lộ
+226	马上	mǎshàng	phó từ	ngay lập tức
+227	吗	ma	trợ từ	không, ư, à
+228	买	mǎi	động từ	mua
+229	慢	màn	tính từ	chậm
+230	忙	máng	tính từ	bận
+231	毛	máo	lượng từ	hào (tiền)
+232	没	mii	phó từ / động từ	"chưa, chưa từng / không, không có /
+không bằng / không tới"
+233	没关系	mii guānxi		không sao, đừng ngại, không có gì
+234	没什么	mii shinme		không sao, không việc gì, không hề gì
+235	没事儿	mii//shìr		không sao
+236	没有	mii·yǒu	động từ / phó từ	"không, không có /
+không bằng / không đủ / đều không / chưa, chưa từng"
+237	妹妹|妹	miimei|mii	danh từ	em gái
+238	门	min	danh từ / lượng từ	cửa, cánh cửa / môn học
+239	门口	minkǒu	danh từ	cửa, cổng
+240	门票	minpiào	danh từ	vé vào cửa
+241	"们
+(朋友们)"	"men
+(pingyoumen)"	hậu tố	chúng, các, bọn (các bạn, chúng bạn)
+242	米饭	mǐfàn	danh từ	cơm
+243	面包	miànbāo	danh từ	bánh mì
+244	面条儿	miàntiáor	danh từ	mì sợi
+245	名字	míngzi	danh từ	tên
+246	明白	míngbai	tính từ / động từ	rõ ràng, công khai, hiểu biết / biết, hiểu
+247	明年	míngnián	danh từ	năm sau
+248	明天	míngtiān	danh từ	ngày mai
+249	拿	ná	động từ	cầm, đưa, lấy, nắm
+250	哪	nǎ	đại từ	nào, đâu, gì
+251	哪里	nǎ·lǐ	đại từ	đâu, ở đâu, chỗ nào, đâu có
+252	哪儿	nǎr	đại từ	đâu, chỗ nào
+253	哪些	nǎxii	đại từ	cái nào, người nào, những cái nào
+254	那	nà	đại từ	kia, đó
+255	那边	nàbiān	đại từ	bên đó
+256	那里	nà·lǐ	đại từ	ở đó
+257	那儿	nàr	đại từ	ở kia
+258	那些	nàxii	đại từ	những... ấy, những... đó, những... kia
+259	奶	nǎi	danh từ	sữa
+260	奶奶	nǎinai	danh từ	bà nội
+261	男	nán	tính từ	nam, con trai
+262	男孩儿	nánháir	danh từ	bé trai
+263	男朋友	nánpingyou	danh từ	bạn trai
+264	男人	nánrin	danh từ	đàn ông
+265	男生	nánshing	danh từ	học sinh nam
+266	南	nán	danh từ	hướng nam
+267	南边	nánbian	danh từ	phía nam
+268	难	nán	tính từ	khó
+269	呢	ne	trợ từ	thế, nhỉ, vậy, đâu
+270	能	ning	động từ	có thể
+271	你	nǐ	đại từ	bạn
+272	你们	nǐmen	đại từ	các bạn
+273	年	nián	lượng từ	năm
+274	您	nín	đại từ	ngài, bạn (lịch sự)
+275	牛奶	niúnǎi	danh từ	sữa bò
+276	女	nǚ	tính từ	nữ, con gái
+277	女儿	nǚ’ir	danh từ	con gái
+278	女孩儿	nǚháir	danh từ	bé gái
+279	女朋友	nǚpingyou	danh từ	bạn gái
+280	女人	nǚrin	danh từ	phụ nữ
+281	女生	nǚshing	danh từ	nữ sinh, cô gái
+282	旁边	pángbiān	danh từ	bên cạnh
+283	跑	pǎo	động từ	chạy
+284	朋友	pingyou	danh từ	bạn bè
+285	票	piào	danh từ	vé, phiếu, thẻ, hoá đơn
+286	七	qī	số từ	số 7
+287	起	qǐ	động từ	dậy, xê, rời khỏi, cất cánh, hất lên, nổi
+288	起床	qǐ//chuáng		thức dậy
+289	起来	qǐ//· lái		ngồi dậy, đứng dậy, ngủ dậy
+290	汽车	qìchi	danh từ	xe ô tô
+291	前	qián	danh từ	phía trước
+292	前边	qiánbian	danh từ	phía trước, đằng trước
+293	前天	qiántiān	danh từ	hôm kia
+294	钱	qián	danh từ	tiền
+295	钱包	qiánbāo	danh từ	ví tiền
+296	请	qǐng	động từ	mời, xin
+297	请假	qǐng//jià		xin nghỉ
+298	请进	qǐng jìn		mời vào
+299	请问	qǐngwin	động từ	xin hỏi
+300	请坐	qǐng zuò		mời ngồi
+301	球	qiú	danh từ	quả bóng, hình cầu, quả, nắm
+302	去	qù	động từ	đi
+303	去年	qùnián	danh từ	năm ngoái
+304	热	ri	tính từ / động từ	nóng, nóng lòng / làm nóng, hâm nóng
+305	人	rin	danh từ	người
+306	认识	rinshi	động từ / danh từ	biết, quen biết, nhận ra / nhận thức
+307	认真	rinzhin	tính từ	nghiêm túc, chăm chỉ, cẩn thận
+308	日	rì	danh từ	ngày
+309	日期	rìqī	danh từ	ngày tháng
+310	肉	ròu	danh từ	thịt
+311	三	sān	số từ	số 3
+312	山	shān	danh từ	núi
+313	商场	shāngchǎng	danh từ	trung tâm thương mại
+314	商店	shāngdiàn	danh từ	cửa hàng
+315	上	shàng	danh từ / động từ	trên, bên trên / lên, đi lên, đến, ra, vào (ca, học)
+316	上班	shàng//bān		đi làm
+317	上边	shàngbian	danh từ	phía trên, bên trên
+318	上车	shàng chi		lên xe
+319	上次	shàng cì		lần trước
+320	上课	shàng//ki		lên lớp, vào học, đi học
+321	上网	shàng//wǎng		lên mạng, lướt mạng
+322	上午	shàngwǔ	danh từ	buổi sáng
+323	上学	shàng//xui		đến trường, đi học
+324	少	shǎo	tính từ / động từ	ít / thiếu, nợ, bớt, mất
+325	谁	shii/shuí	đại từ	ai
+326	身上	shinshang	danh từ	trên người, bên mình, trong người
+327	身体	shintǐ	danh từ	cơ thể, thân thể
+328	什么	shinme	đại từ	cái gì
+329	生病	shing//bìng		bị bệnh
+330	生气	shing//qì		tức giận, nổi giận
+331	生日	shingrì	danh từ	sinh nhật
+332	十	shí	số từ	số 10
+333	时候	shíhou	danh từ	lúc, khi
+334	时间	shíjiān	danh từ	thời gian
+335	事	shì	danh từ	việc, chuyện
+336	试	shì	động từ	thử
+337	是	shì	động từ	là
+338	是不是	shì bu shì		phải không
+339	手	shǒu	danh từ	tay
+340	手机	shǒujī	danh từ	điện thoại di động
+341	书	shū	danh từ	sách
+342	书包	shūbāo	danh từ	túi sách, cặp sách
+343	书店	shūdiàn	danh từ	hiệu sách
+344	树	shù	danh từ	cây
+345	水	shuǐ	danh từ	nước
+346	水果	shuǐguǒ	danh từ	hoa quả, trái cây
+347	睡	shuì	động từ	ngủ, nằm dài
+348	睡觉	shuì//jiào		ngủ, đi ngủ, ngủ nghê
+349	说	shuō	động từ	nói
+350	说话	shuō//huà		nói chuyện
+351	四	sì	số từ	số 4
+352	送	sòng	động từ	đưa, giao, tặng, tiễn
+353	岁	suì	lượng từ	tuổi
+354	他	tā	đại từ	anh ấy, ông ấy, cậu ấy
+355	他们	tāmen	đại từ	họ (nam)
+356	他们	tā	đại từ	cô ấy, bà ấy, chị ấy
+357	们	tāmen	đại từ	họ (nữ)
+358	太	tài	phó từ	quá, rất
+359	天	tiān	danh từ / lượng từ	trời, thời gian / ngày
+360	天气	tiānqì	danh từ	thời tiết
+361	听	tīng	động từ	nghe
+362	听到	tīngdào		nghe, nghe thấy, nghe được
+363	听见	tīng//jiàn		nghe, nghe thấy
+364	听写	tīngxǐe	động từ	nghe viết, nghe chép chính tả
+365	同学	tóngxui	danh từ	bạn học
+366	图书馆	túshūguǎn	danh từ	thư viện
+367	外	wài	danh từ	ngoài, bên ngoài
+368	外边	wàibian	danh từ	bên ngoài
+369	外国	wàiguó	danh từ	nước ngoài
+370	外语	wàiyǔ	danh từ	ngoại ngữ
+371	玩儿	wánr	động từ	chơi
+372	晚	wǎn	tính từ	muộn, trễ
+373	晚饭	wǎnfàn	danh từ	bữa tối
+374	晚上	wǎnshang	danh từ	buổi tối
+375	网上	wǎng shang		trực tuyến, trên mạng
+376	网友	wǎngyǒu	danh từ	bạn trên mạng
+377	忘	wàng	động từ	quên, bỏ quên
+378	忘记	wàngjì	động từ	quên, không nhớ, quên khuấy
+379	问	win	động từ	hỏi
+380	我	wǒ	đại từ	tôi
+381	我们	wǒmen	đại từ	chúng tôi
+382	五	wǔ	số từ	số 5
+383	午饭	wǔfàn	danh từ	bữa trưa
+384	西	xī	danh từ	phía tây
+385	西边	xībian	danh từ	phía tây, hướng tây
+386	洗	xǐ	động từ	rửa, giặt
+387	洗手间	xǐshǒujiān	danh từ	nhà vệ sinh
+388	喜欢	xǐhuan	động từ	thích
+389	下	xià	danh từ / động từ	"dưới, phía dưới / sau / trong (một phạm vi,
+điều kiện nào đó) / xuống, tan (kết thúc công việc) / đủ (biểu thị
+có đủ không gian chứa đựng)"
+390	下班	xià//bān		tan làm
+391	下边	xiàbian	danh từ	phía dưới
+392	下车	xià chi		xuống xe
+393	下次	xià cì		lần sau, lần tới
+394	下课	xià//ki		tan học
+395	下午	xiàwǔ	danh từ	buổi chiều
+396	下雨	xià yǔ		mưa
+397	先	xiān	phó từ	trước tiên
+398	先生	xiānsheng	danh từ	ông, ngài, thầy
+399	现在	xiànzài	danh từ	bây giờ
+400	想	xiǎng	động từ	muốn, nghĩ, nhớ
+401	小	xiǎo	tính từ	nhỏ
+402	小孩儿	xiǎoháir	danh từ	trẻ con
+403	小姐	xiǎojii	danh từ	cô, tiểu thư
+404	小朋友	xiǎopingyǒu	danh từ	trẻ em, bạn nhỏ
+405	小时	xiǎoshí	danh từ	giờ
+406	小学	xiǎoxui	danh từ	tiểu học
+407	小学生	xiǎoxuishing	danh từ	học sinh tiểu học
+408	笑	xiào	động từ	cười
+409	写	xii	động từ	viết
+410	谢谢	xiixie	động từ	cảm ơn
+411	新	xīn	tính từ	mới
+412	新年	xīnnián	danh từ	năm mới
+413	星期	xīngqī	danh từ	tuần lễ, thứ
+414	星期日	xīngqīrì	danh từ	chủ nhật
+415	星期天	xīngqītiān	danh từ	chủ nhật
+416	行	xíng	động từ / tính từ	được, ổn, có thể / giỏi, tốt, ổn
+417	休息	xiūxi	động từ	nghỉ ngơi
+418	学	xui	động từ	học
+419	学生	xui·shing	danh từ	học sinh
+420	学习	xuixí	động từ	học tập
+421	学校	xuixiào	danh từ	trường học
+422	学院	xuiyuàn	danh từ	học viện, viện
+423	要	yào	động từ	muốn, phải, cần
+424	爷爷	yiye	danh từ	ông nội
+425	也	yi	phó từ	cũng
+426	页	yi	lượng từ	trang (giấy)
+427	一	yī	số từ	số 1
+428	衣服	yīfu	danh từ	quần áo
+429	医生	yīshing	danh từ	bác sĩ
+430	医院	yīyuàn	danh từ	bệnh viện
+431	一半	yíbàn	số từ	một nửa
+432	一会儿	yíhuìr		một lúc, lát nữa
+433	一块儿	yíkuàir	danh từ / phó từ	cùng nơi / cùng, cùng nhau
+434	一下儿	yíxiàr		một chút, một xíu (thời gian ngắn)
+435	一样	yíyàng	tính từ	giống nhau
+436	一边	yìbiān	danh từ / phó từ	mặt bên, một mặt, bên cạnh / vừa, vừa ... vừa
+437	一点儿	yìdiǎnr		chút xíu, chút ít
+438	一起	yìqǐ	phó từ / danh từ	cùng, cùng nhau làm gì / tổng cộng / ở cùng một nơi, một chỗ
+439	一些	yìxii		mấy, một vài, một số
+440	用	yòng	động từ	dùng
+441	有	yǒu	động từ	có
+442	有的	yǒude	đại từ	có loại, có người, có cái, một số, có những
+443	有名	yǒu//míng		nổi tiếng
+444	有时	yǒushí		đôi khi, có lúc, thỉnh thoảng
+444	有时候	yǒushíhou	phó từ	có lúc, có thời gian
+445	有(一些)	yǒu(yì)xii	đại từ	có một số
+446	有用	yǒuyòng	động từ	có ích
+447	右	yòu	danh từ	bên phải
+448	右边	yòubian	danh từ	phía bên phải
+449	雨	yǔ	danh từ	mưa
+450	元	yuán	lượng từ	đồng (đơn vị tiền tệ)
+451	远	yuǎn	tính từ	xa
+452	月	yui	danh từ	tháng
+453	再	zài	phó từ	lại, nữa
+454	再见	zàijiàn	động từ	tạm biệt
+455	在	zài	động từ / giới từ / phó từ	"sống, ở / đang, ở, vào (ở đâu, thời gian nào, điều kiện
+nào) / đang (làm gì đó)"
+456	在家	zàijiā	động từ	ở nhà
+457	早	zǎo	tính từ	sớm (so với thời gian quy định)
+458	早饭	zǎofàn	danh từ	bữa sáng
+459	早上	zǎoshang	danh từ	buổi sáng
+460	怎么	zinme	đại từ	như thế nào
+461	站	zhàn	danh từ	trạm, ga
+462	找	zhǎo	động từ	tìm
+463	找到	zhǎodào		tìm thấy
+464	这	zhi	đại từ	này
+465	这边	zhibiān	đại từ	bên này
+466	这里	zhi·lǐ	đại từ	ở đây, chỗ này
+467	这儿	zhir	đại từ	ở đây, chỗ này
+468	这些	zhixii	đại từ	những cái này
+469	着	zhe	trợ từ	"đang (đặt sau động từ chỉ sự việc đang tiến
+hành/biểu thị sự tiếp tục của trạng thái)"
+470	真	zhin	phó từ / tính từ	quá, thật, thực sự / thật, thật sự, chính xác
+471	真的	zhin de		thật sự
+472	正	zhing	phó từ	đang, vừa, đúng, chính
+473	正在	zhingzài	phó từ	đang, vẫn đang
+474	知道	zhī·dào	động từ	biết, hiểu, hiểu rõ
+475	知识	zhīshi	danh từ	tri thức, kiến thức, sự hiểu biết
+476	中	zhōng	danh từ	giữa, trung tâm
+477	中国	Zhōngguó	danh từ	Trung Quốc
+478	中间	zhōngjiān	danh từ	trong, trong số, trung tâm
+479	中文	Zhōngwin	danh từ	tiếng Trung
+480	中午	zhōngwǔ	danh từ	buổi trưa
+481	中学	zhōngxui	danh từ	trường trung học
+482	中学生	zhōngxuishing	danh từ	học sinh trung học
+483	重	zhòng	tính từ	nặng, quan trọng, thận trọng
+484	重要	zhòngyào	tính từ	quan trọng, trọng yếu
+485	住	zhù	động từ	ở / dừng / đủ sức / chắc
+486	准备	zhǔnbii	động từ	chuẩn bị
+487	桌子	zhuōzi	danh từ	bàn
+488	字	zì	danh từ	từ, chữ, văn tự
+489	子(桌子)	zi (zhuōzi)	hậu tố	"thêm vào sau danh từ, động từ, tính từ khác
+để tạo thành một danh từ"
+490	走	zǒu	động từ	đi, đi bộ, rời khỏi
+491	走路	zǒu//lù		đi bộ
+492	最	zuì	phó từ	nhất
+493	最好	zuìhǎo	phó từ	tốt nhất
+494	最后	zuìhòu	danh từ	cuối cùng, sau cùng
+495	昨天	zuótiān	danh từ	hôm qua
+496	左	zuǒ	danh từ	bên trái
+497	左边	zuǒbian	danh từ	phía bên trái
+498	坐	zuò	động từ	ngồi
+499	坐下	zuòxia		ngồi xuống
+500	做	zuò	động từ	làm / chế tạo / trở thành
 ﻿

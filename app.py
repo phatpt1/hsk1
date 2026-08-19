@@ -16,7 +16,7 @@ def load_data():
     try:
         return pd.read_csv("hsk1_vocab_final.csv")
     except Exception:
-        st.error("Lỗi: Chưa tìm thấy file hsk1_vocab_final.csv. Hãy đảm bảo bạn đã đẩy file này lên GitHub.")
+        st.error("Lỗi: Chưa tìm thấy file hsk1_vocab.csv. Hãy đảm bảo bạn đã đẩy file này lên GitHub.")
         return pd.DataFrame(columns=["STT", "Tiếng Trung", "Pinyin", "Từ loại", "Dịch nghĩa"])
 
 # Hàm 2: Tạo nút Audio ẩn thanh player (Dùng HTML/JS)

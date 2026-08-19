@@ -141,7 +141,7 @@ elif menu == "Luyện viết":
         st.divider()
         write_mode = st.radio("Chọn chế độ luyện viết:", ["✍️ Viết theo mẫu (Chấm điểm nét)", "🖌️ Viết tự do (Bút thư pháp)"], horizontal=True)
         
-        # TAB 1: HANZI WRITER (CÓ NHẬN DIỆN SỐ NÉT VÀ BỘ THỦ)
+        # TAB 1: HANZI WRITER (ĐÃ FIX LỖI ĐẾM NÉT)
         if write_mode == "✍️ Viết theo mẫu (Chấm điểm nét)":
             col_settings, col_writer = st.columns([1, 2])
             with col_settings:
@@ -157,7 +157,7 @@ elif menu == "Luyện viết":
                 <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
                 <style>
                     .hanzi-container {{ display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }}
-                    #char-info-box {{ margin-bottom: 15px; font-size: 18px; background: #FFF3E0; padding: 10px 20px; border-radius: 8px; border-left: 5px solid #FF9800; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
+                    #char-info-box {{ margin-bottom: 15px; font-size: 18px; background: #FFF3E0; padding: 10px 20px; border-radius: 8px; border-left: 5px solid #FF9800; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; width: 450px; }}
                     #grid-background {{ width: 450px; height: 450px; margin-bottom: 15px; {css_style} }}
                     .btn-action {{ margin: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background-color: #f0f2f6; font-weight: bold; }}
                     #quiz-btn {{ background-color: #168F16; color: white; border: none; font-weight: bold; }}
@@ -172,12 +172,14 @@ elif menu == "Luyện viết":
                     var writer = HanziWriter.create('grid-background', '{char_to_draw}', {{
                         width: 450, height: 450, padding: 20, showOutline: true, 
                         strokeAnimationSpeed: 1, delayBetweenStrokes: 100, 
-                        radicalColor: '#E03C31', strokeColor: '#333333' /* Đổi màu bộ thủ thành Đỏ */
+                        radicalColor: '#E03C31', strokeColor: '#333333'
                     }});
                     
-                    /* Tự động lấy số nét và báo vị trí bộ thủ */
-                    writer.characterDataPromise.then(function(data) {{
-                        document.getElementById('char-info-box').innerHTML = "🟢 <b>Tổng số nét:</b> " + data.strokes.length + " nét &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 🔴 <b>Bộ thủ:</b> Là phần được tô <span style='color:#E03C31; font-weight:bold;'>MÀU ĐỎ</span>";
+                    /* Sử dụng loadCharacterData để đảm bảo không bị lỗi undefined promise */
+                    HanziWriter.loadCharacterData('{char_to_draw}').then(function(charData) {{
+                        document.getElementById('char-info-box').innerHTML = "🟢 <b>Tổng số nét:</b> " + charData.strokes.length + " nét <br> 🔴 <b>Bộ thủ:</b> Phần được tô <span style='color:#E03C31; font-weight:bold;'>MÀU ĐỎ</span>";
+                    }}).catch(function(err) {{
+                        document.getElementById('char-info-box').innerHTML = "⚠️ Không thể phân tích dữ liệu chữ này.";
                     }});
 
                     document.getElementById('animate-btn').addEventListener('click', function() {{ writer.animateCharacter(); }});
@@ -226,20 +228,18 @@ elif menu == "Luyện viết":
                     const canvas = document.getElementById('draw-canvas');
                     const ctx = canvas.getContext('2d');
                     let isDrawing = false;
-                    let undoStack = []; // Mảng lưu trữ các nét vẽ
+                    let undoStack = [];
                     
                     ctx.strokeStyle = '{stroke_color}';
                     ctx.lineWidth = {stroke_width};
                     ctx.lineCap = 'round';
                     ctx.lineJoin = 'round';
 
-                    // Lưu trạng thái canvas vào Stack
                     function saveState() {{
-                        if (undoStack.length > 30) undoStack.shift(); // Chỉ lưu 30 nét gần nhất để nhẹ RAM
+                        if (undoStack.length > 30) undoStack.shift();
                         undoStack.push(canvas.toDataURL());
                     }}
 
-                    // Hàm Hoàn tác
                     function undoCanvas() {{
                         if (undoStack.length > 0) {{
                             let imgData = undoStack.pop();
@@ -254,7 +254,6 @@ elif menu == "Luyện viết":
                         }}
                     }}
 
-                    // Hàm Xóa toàn bộ
                     function clearCanvas() {{ 
                         saveState(); 
                         ctx.clearRect(0, 0, canvas.width, canvas.height); 
@@ -272,7 +271,7 @@ elif menu == "Luyện viết":
                     }}
 
                     function start(e) {{
-                        saveState(); // Lưu trước khi vẽ nét mới
+                        saveState(); 
                         isDrawing = true;
                         const pos = getPos(e);
                         ctx.beginPath(); ctx.moveTo(pos.x, pos.y); ctx.lineTo(pos.x, pos.y); ctx.stroke();

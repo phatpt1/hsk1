@@ -5,12 +5,53 @@ import base64
 import io
 import hashlib
 import random
+import urllib.request
+import json
 import streamlit.components.v1 as components
 
 # Cấu hình trang
 st.set_page_config(page_title="App Học HSK 1", layout="wide")
 
-# ================= HÀM HỖ TRỢ =================
+# ================= HÀM HỖ TRỢ & DATA =================
+
+# Ánh xạ 214 Bộ thủ Hán tự sang âm Hán Việt và ý nghĩa
+RADICALS_VN = {
+    "一": "Nhất (số 1)", "丨": "Cổn (sổ dọc)", "丶": "Chủ (chấm)", "丿": "Phiệt (phẩy)", "乙": "Ất (can ất)", "亅": "Quyết (móc)",
+    "二": "Nhị (số 2)", "亠": "Đầu (chấm đầu)", "人": "Nhân (người)", "亻": "Nhân đứng", "儿": "Nhi (trẻ con)", "入": "Nhập (vào)", "八": "Bát (số 8)", "冂": "Quynh (biên giới)", "冖": "Mịch (trùm)", "冫": "Băng (nước đá)", "几": "Kỷ (ghế)", "凵": "Khảm (há miệng)", "刀": "Đao (dao)", "刂": "Đao đứng", "力": "Lực (sức)", "勹": "Bao (bọc)", "匕": "Chủy (thìa)", "匚": "Phương (tủ)", "匸": "Hệ (che)", "十": "Thập (số 10)", "卜": "Bốc (bói)", "卩": "Tiết (đốt tre)", "厂": "Hán (sườn núi)", "厶": "Tư (riêng tư)", "又": "Hựu (lại)",
+    "口": "Khẩu (miệng)", "囗": "Vi (chu vi)", "土": "Thổ (đất)", "士": "Sĩ (kẻ sĩ)", "夂": "Truy (đi sau)", "夊": "Truy (đi chậm)", "夕": "Tịch (đêm)", "大": "Đại (to lớn)", "女": "Nữ (phụ nữ)", "子": "Tử (con)", "宀": "Miên (mái nhà)", "寸": "Thốn (đơn vị đo)", "小": "Tiểu (nhỏ)", "尢": "Uông (yếu)", "尸": "Thi (xác)", "屮": "Triệt (cỏ mầm)", "山": "Sơn (núi)", "巛": "Xuyên (sông)", "川": "Xuyên (sông)", "工": "Công (thợ)", "己": "Kỷ (bản thân)", "巾": "Cân (khăn)", "干": "Can (lá chắn)", "幺": "Yêu (nhỏ)", "广": "Nghiễm (mái nhà)", "廴": "Dẫn (bước dài)", "廾": "Củng (chắp tay)", "弋": "Dặc (bắn tên)", "弓": "Cung (cái cung)", "彐": "Ký (đầu nhím)", "彡": "Sam (lông tóc)", "彳": "Xích (bước ngắn)",
+    "心": "Tâm (tim)", "忄": "Tâm đứng", "戈": "Qua (giáo)", "戶": "Hộ (cửa)", "手": "Thủ (tay)", "扌": "Thủ gẩy", "支": "Chi (nhánh)", "攴": "Phộc (đánh nhẹ)", "攵": "Phộc", "文": "Văn (văn vẻ)", "斗": "Đẩu (cái đấu)", "斤": "Cân (rìu)", "方": "Phương (vuông)", "无": "Vô (không)", "日": "Nhật (mặt trời)", "曰": "Viết (nói)", "月": "Nguyệt (mặt trăng)", "木": "Mộc (cây)", "欠": "Khiếm (thiếu)", "止": "Chỉ (dừng)", "歹": "Đãi (xấu xa)", "殳": "Thù (binh khí)", "毋": "Vô (chớ)", "比": "Tỷ (so sánh)", "毛": "Mao (lông)", "氏": "Thị (họ)", "气": "Khí (hơi)", "水": "Thủy (nước)", "氵": "Thủy (3 chấm)", "火": "Hỏa (lửa)", "灬": "Hỏa (4 chấm)", "爪": "Trảo (móng vuốt)", "爫": "Trảo (trên)", "父": "Phụ (cha)", "爻": "Hào (bát quái)", "爿": "Tường (mảnh gỗ)", "片": "Phiến (mảnh)", "牙": "Nha (răng)", "牛": "Ngưu (bò)", "牜": "Ngưu", "犬": "Khuyển (chó)", "犭": "Khuyển",
+    "玄": "Huyền (đen)", "玉": "Ngọc (đá quý)", "王": "Vương (vua)", "瓜": "Qua (dưa)", "瓦": "Ngõa (ngói)", "甘": "Cam (ngọt)", "生": "Sinh (đẻ)", "用": "Dụng (dùng)", "田": "Điền (ruộng)", "疋": "Thất (đơn vị đo)", "疒": "Nạch (bệnh)", "癶": "Bát (gạt chân)", "白": "Bạch (trắng)", "皮": "Bì (da)", "皿": "Mãnh (bát đĩa)", "目": "Mục (mắt)", "矛": "Mâu (giáo)", "矢": "Thỉ (mũi tên)", "石": "Thạch (đá)", "示": "Thị (chỉ bảo)", "礻": "Thị", "禸": "Nhựu (vết chân)", "禾": "Hòa (lúa)", "穴": "Huyệt (hang)", "立": "Lập (đứng)",
+    "竹": "Trúc (tre)", "⺮": "Trúc", "米": "Mễ (gạo)", "糸": "Mịch (tơ)", "纟": "Mịch", "缶": "Phẫu (đồ sành)", "网": "Võng (lưới)", "罒": "Võng", "羊": "Dương (dê)", "羽": "Vũ (lông chim)", "老": "Lão (già)", "而": "Nhi (mà)", "耒": "Lỗi (cày)", "耳": "Nhĩ (tai)", "聿": "Duật (bút)", "肉": "Nhục (thịt)", "臣": "Thần (bề tôi)", "自": "Tự (bản thân)", "至": "Chí (đến)", "臼": "Cữu (cối)", "舌": "Thiệt (lưỡi)", "舛": "Suyễn (sai)", "舟": "Chu (thuyền)", "艮": "Cấn (quẻ)", "色": "Sắc (màu)", "艸": "Thảo (cỏ)", "艹": "Thảo", "虍": "Hô (vằn hổ)", "虫": "Trùng (sâu bọ)", "血": "Huyết (máu)", "行": "Hành (đi)", "衣": "Y (áo)", "衤": "Y", "襾": "Á (che)",
+    "见": "Kiến (thấy)", "角": "Giác (sừng)", "言": "Ngôn (nói)", "讠": "Ngôn", "谷": "Cốc (khe núi)", "豆": "Đậu (hạt)", "豕": "Thỉ (lợn)", "豸": "Trãi (bò sát)", "贝": "Bối (vỏ sò)", "赤": "Xích (đỏ)", "走": "Tẩu (chạy)", "足": "Túc (chân)", "身": "Thân (cơ thể)", "车": "Xa (xe)", "辛": "Tân (cay)", "辰": "Thần (thìn)", "辵": "Sước (bước đi)", "辶": "Sước", "邑": "Ấp (vùng đất)", "阝": "Phụ/Ấp (Gò đất / Ấp)", "酉": "Dậu (giờ Dậu)", "采": "Biện (phân biệt)", "里": "Lý (dặm)",
+    "金": "Kim (vàng)", "钅": "Kim", "长": "Trường (dài)", "门": "Môn (cửa)", "阜": "Phụ (gò đất)", "隶": "Đãi (kịp)", "隹": "Chuy (chim)", "雨": "Vũ (mưa)", "青": "Thanh (xanh)", "非": "Phi (sai)",
+    "面": "Diện (mặt)", "革": "Cách (da)", "韦": "Vi (da mềm)", "韭": "Cửu (hẹ)", "音": "Âm (âm thanh)", "页": "Hiệt (trang)", "风": "Phong (gió)", "飞": "Phi (bay)", "食": "Thực (ăn)", "饣": "Thực", "首": "Thủ (đầu)", "香": "Hương (thơm)",
+    "马": "Mã (ngựa)", "骨": "Cốt (xương)", "高": "Cao (cao)", "髟": "Bưu (tóc)", "斗": "Đấu (chiến đấu)", "鬯": "Xưởng (rượu)", "鬲": "Cách (nồi)", "鬼": "Quỷ (ma)",
+    "鱼": "Ngư (cá)", "鸟": "Điểu (chim)", "卤": "Lỗ (đất mặn)", "鹿": "Lộc (hươu)", "麦": "Mạch (lúa mạch)", "麻": "Ma (gai)",
+    "黄": "Hoàng (vàng)", "黍": "Thử (nếp)", "黑": "Hắc (đen)", "黹": "Chỉ (may)",
+    "黾": "Mãnh (ếch)", "鼎": "Đỉnh (vạc)", "鼓": "Cổ (trống)", "鼠": "Thử (chuột)",
+    "鼻": "Tị (mũi)", "齐": "Tề (đều)",
+    "齿": "Xỉ (răng)", "龙": "Long (rồng)", "龟": "Quy (rùa)", "龠": "Dược (sáo)"
+}
+
+# Tải Database cấu tạo Hán Tự (chỉ chạy 1 lần)
+@st.cache_data
+def load_char_dict():
+    char_dict = {}
+    try:
+        url = "https://raw.githubusercontent.com/skishore/makemeahanzi/master/dictionary.txt"
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req) as response:
+            for line in response.read().decode('utf-8').split('\n'):
+                if line.strip():
+                    data = json.loads(line)
+                    char_dict[data['character']] = {
+                        'radical': data.get('radical', ''),
+                        'decomposition': data.get('decomposition', '')
+                    }
+    except Exception:
+        pass
+    return char_dict
+
 @st.cache_data
 def load_data():
     try:
@@ -45,11 +86,9 @@ def create_audio_button(text, button_text="🔊 Phát âm từ này"):
     except Exception as e:
         st.error("Không thể tải âm thanh.")
 
-# --- HÀM TẠO NỀN GIẤY SVG NÉT ĐỨT ---
 def get_grid_css(grid_type, size=450):
     border = "border: 4px solid #d32f2f; border-radius: 8px;"
     svg = ""
-    
     if grid_type == "Điền tự cách (田)":
         svg = f"""<svg width="{size}" height="{size}" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="{size/2}" x2="{size}" y2="{size/2}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8" /><line x1="{size/2}" y1="0" x2="{size/2}" y2="{size}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8" /></svg>"""
     elif grid_type == "Mễ tự cách (米)":
@@ -72,11 +111,11 @@ def get_grid_css(grid_type, size=450):
         bg_image = f"url('data:image/svg+xml;base64,{b64}')"
     else:
         bg_image = "none"
-
     return f"background-image: {bg_image}; background-color: #ffffff; {border}"
 
 # ================= GIAO DIỆN CHÍNH =================
 df = load_data()
+char_dict_db = load_char_dict()
 
 st.sidebar.title("Chức năng HSK 1")
 menu = st.sidebar.radio(
@@ -141,7 +180,7 @@ elif menu == "Luyện viết":
         st.divider()
         write_mode = st.radio("Chọn chế độ luyện viết:", ["✍️ Viết theo mẫu (Chấm điểm nét)", "🖌️ Viết tự do (Bút thư pháp)"], horizontal=True)
         
-        # TAB 1: HANZI WRITER (ĐÃ FIX LỖI ĐẾM NÉT)
+        # TAB 1: HANZI WRITER (ĐÃ CÓ NHẬN DIỆN BỘ THỦ VÀ CẤU TẠO)
         if write_mode == "✍️ Viết theo mẫu (Chấm điểm nét)":
             col_settings, col_writer = st.columns([1, 2])
             with col_settings:
@@ -151,19 +190,36 @@ elif menu == "Luyện viết":
                 
                 paper_type_quiz = st.selectbox("📝 Chọn giấy (Cỡ 450px):", ["Điền tự cách (田)", "Mễ tự cách (米)", "Cửu cung cách (九宫)", "Hồi tự cách (回)", "Phương cách (方)", "Giấy trắng"], key="quiz_paper")
                 css_style = get_grid_css(paper_type_quiz, size=450)
+                
+                # Trích xuất dữ liệu từ Database
+                char_info_data = char_dict_db.get(char_to_draw, {})
+                radical_char = char_info_data.get('radical', '')
+                decomposition = char_info_data.get('decomposition', '')
+                
+                if radical_char:
+                    radical_name = RADICALS_VN.get(radical_char, "Chưa rõ")
+                    radical_html = f"🔴 <b>Bộ thủ:</b> <span style='font-size: 20px; font-weight:bold;'>{radical_char}</span> - {radical_name} <span style='font-size:14px; color:#E03C31;'>(Phần MÀU ĐỎ)</span>"
+                else:
+                    radical_html = f"🔴 <b>Bộ thủ:</b> Phần được tô <span style='color:#E03C31; font-weight:bold;'>MÀU ĐỎ</span>"
+
+                if decomposition:
+                    decomp_html = f"🧩 <b>Cấu trúc chữ:</b> <span style='font-size: 22px; font-weight: bold;'>{decomposition}</span>"
+                else:
+                    decomp_html = ""
 
             with col_writer:
                 html_code = f"""
                 <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
                 <style>
                     .hanzi-container {{ display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }}
-                    #char-info-box {{ margin-bottom: 15px; font-size: 18px; background: #FFF3E0; padding: 10px 20px; border-radius: 8px; border-left: 5px solid #FF9800; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; width: 450px; }}
+                    #char-info-box {{ margin-bottom: 15px; font-size: 17px; background: #FFF3E0; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #FF9800; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 450px; line-height: 1.6; }}
                     #grid-background {{ width: 450px; height: 450px; margin-bottom: 15px; {css_style} }}
                     .btn-action {{ margin: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background-color: #f0f2f6; font-weight: bold; }}
                     #quiz-btn {{ background-color: #168F16; color: white; border: none; font-weight: bold; }}
+                    .note-text {{ font-size: 13px; color: #666; margin-top: 5px; font-style: italic; }}
                 </style>
                 <div class="hanzi-container">
-                    <div id="char-info-box">⏳ Đang phân tích dữ liệu chữ...</div>
+                    <div id="char-info-box">⏳ Đang lấy dữ liệu từ Server...</div>
                     <div id="grid-background"></div>
                     <div><button class="btn-action" id="animate-btn">▶ Xem thứ tự nét</button><button class="btn-action" id="quiz-btn">✍️ Tự luyện (Chế độ Quiz)</button></div>
                     <h4 id="feedback" style="color: #d32f2f; margin-top: 10px; height: 20px;"></h4>
@@ -175,9 +231,12 @@ elif menu == "Luyện viết":
                         radicalColor: '#E03C31', strokeColor: '#333333'
                     }});
                     
-                    /* Sử dụng loadCharacterData để đảm bảo không bị lỗi undefined promise */
                     HanziWriter.loadCharacterData('{char_to_draw}').then(function(charData) {{
-                        document.getElementById('char-info-box').innerHTML = "🟢 <b>Tổng số nét:</b> " + charData.strokes.length + " nét <br> 🔴 <b>Bộ thủ:</b> Phần được tô <span style='color:#E03C31; font-weight:bold;'>MÀU ĐỎ</span>";
+                        document.getElementById('char-info-box').innerHTML = 
+                            "<div style='margin-bottom: 5px;'>🟢 <b>Tổng số nét:</b> " + charData.strokes.length + " nét</div>" +
+                            "<div style='margin-bottom: 5px;'>{radical_html}</div>" +
+                            "<div style='color: #0066cc;'>{decomp_html}</div>" +
+                            "<div class='note-text'>💡 Ký hiệu cấu tạo: ⿰ (trái/phải), ⿱ (trên/dưới), ⿴ (bao quanh)...</div>";
                     }}).catch(function(err) {{
                         document.getElementById('char-info-box').innerHTML = "⚠️ Không thể phân tích dữ liệu chữ này.";
                     }});
@@ -194,9 +253,9 @@ elif menu == "Luyện viết":
                     }});
                 </script>
                 """
-                components.html(html_code, height=650)
+                components.html(html_code, height=750)
 
-        # TAB 2: FREE DRAW (BẢNG CANVAS CÓ NÚT HOÀN TÁC)
+        # TAB 2: FREE DRAW (BẢNG CANVAS)
         elif write_mode == "🖌️ Viết tự do (Bút thư pháp)":
             col_settings, col_canvas = st.columns([1, 2])
             with col_settings:
@@ -209,11 +268,7 @@ elif menu == "Luyện viết":
                 html_code = f"""
                 <style>
                     .canvas-container {{ display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }}
-                    #draw-canvas {{
-                        width: 500px; height: 500px;
-                        touch-action: none; 
-                        {css_style}
-                    }}
+                    #draw-canvas {{ width: 500px; height: 500px; touch-action: none; {css_style} }}
                     .btn-action {{ padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background-color: #f0f2f6; font-weight: bold; }}
                     .btn-action:hover {{ background-color: #e0e0e0; }}
                 </style>
@@ -235,58 +290,24 @@ elif menu == "Luyện viết":
                     ctx.lineCap = 'round';
                     ctx.lineJoin = 'round';
 
-                    function saveState() {{
-                        if (undoStack.length > 30) undoStack.shift();
-                        undoStack.push(canvas.toDataURL());
-                    }}
-
+                    function saveState() {{ if (undoStack.length > 30) undoStack.shift(); undoStack.push(canvas.toDataURL()); }}
                     function undoCanvas() {{
                         if (undoStack.length > 0) {{
                             let imgData = undoStack.pop();
-                            let img = new Image();
-                            img.src = imgData;
-                            img.onload = function() {{
-                                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                ctx.drawImage(img, 0, 0);
-                            }}
-                        }} else {{
-                            ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        }}
+                            let img = new Image(); img.src = imgData;
+                            img.onload = function() {{ ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0); }}
+                        }} else {{ ctx.clearRect(0, 0, canvas.width, canvas.height); }}
                     }}
-
-                    function clearCanvas() {{ 
-                        saveState(); 
-                        ctx.clearRect(0, 0, canvas.width, canvas.height); 
-                    }}
-
+                    function clearCanvas() {{ saveState(); ctx.clearRect(0, 0, canvas.width, canvas.height); }}
                     function getPos(evt) {{
                         const rect = canvas.getBoundingClientRect();
-                        let clientX = evt.clientX;
-                        let clientY = evt.clientY;
-                        if (evt.touches && evt.touches.length > 0) {{
-                            clientX = evt.touches[0].clientX;
-                            clientY = evt.touches[0].clientY;
-                        }}
+                        let clientX = evt.clientX; let clientY = evt.clientY;
+                        if (evt.touches && evt.touches.length > 0) {{ clientX = evt.touches[0].clientX; clientY = evt.touches[0].clientY; }}
                         return {{ x: clientX - rect.left, y: clientY - rect.top }};
                     }}
-
-                    function start(e) {{
-                        saveState(); 
-                        isDrawing = true;
-                        const pos = getPos(e);
-                        ctx.beginPath(); ctx.moveTo(pos.x, pos.y); ctx.lineTo(pos.x, pos.y); ctx.stroke();
-                        e.preventDefault();
-                    }}
-                    function draw(e) {{
-                        if (!isDrawing) return;
-                        const pos = getPos(e);
-                        ctx.lineTo(pos.x, pos.y); ctx.stroke();
-                        e.preventDefault();
-                    }}
-                    function stop(e) {{
-                        if (isDrawing) {{ ctx.stroke(); ctx.closePath(); isDrawing = false; }}
-                        e.preventDefault();
-                    }}
+                    function start(e) {{ saveState(); isDrawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); ctx.lineTo(pos.x, pos.y); ctx.stroke(); e.preventDefault(); }}
+                    function draw(e) {{ if (!isDrawing) return; const pos = getPos(e); ctx.lineTo(pos.x, pos.y); ctx.stroke(); e.preventDefault(); }}
+                    function stop(e) {{ if (isDrawing) {{ ctx.stroke(); ctx.closePath(); isDrawing = false; }} e.preventDefault(); }}
 
                     canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', draw);
                     canvas.addEventListener('mouseup', stop); canvas.addEventListener('mouseout', stop);

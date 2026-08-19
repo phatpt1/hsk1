@@ -124,7 +124,7 @@ elif menu == "Ngữ pháp & Mẫu câu":
 
 # ----------------- CHỨC NĂNG 4: LUYỆN VIẾT -----------------
 elif menu == "Luyện viết":
-    st.header("Luyện Viết Chữ Hán (Phóng to 150%)")
+    st.header("Luyện Viết Chữ Hán")
     
     if not df.empty:
         df['Label'] = df['STT'].astype(str) + ". " + df['Tiếng Trung'] + " (" + df['Pinyin'] + ")"
@@ -141,7 +141,7 @@ elif menu == "Luyện viết":
         st.divider()
         write_mode = st.radio("Chọn chế độ luyện viết:", ["✍️ Viết theo mẫu (Chấm điểm nét)", "🖌️ Viết tự do (Bút thư pháp)"], horizontal=True)
         
-        # TAB 1: HANZI WRITER
+        # TAB 1: HANZI WRITER (CÓ NHẬN DIỆN SỐ NÉT VÀ BỘ THỦ)
         if write_mode == "✍️ Viết theo mẫu (Chấm điểm nét)":
             col_settings, col_writer = st.columns([1, 2])
             with col_settings:
@@ -157,20 +157,29 @@ elif menu == "Luyện viết":
                 <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
                 <style>
                     .hanzi-container {{ display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }}
+                    #char-info-box {{ margin-bottom: 15px; font-size: 18px; background: #FFF3E0; padding: 10px 20px; border-radius: 8px; border-left: 5px solid #FF9800; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
                     #grid-background {{ width: 450px; height: 450px; margin-bottom: 15px; {css_style} }}
-                    button {{ margin: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; }}
+                    .btn-action {{ margin: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background-color: #f0f2f6; font-weight: bold; }}
                     #quiz-btn {{ background-color: #168F16; color: white; border: none; font-weight: bold; }}
                 </style>
                 <div class="hanzi-container">
+                    <div id="char-info-box">⏳ Đang phân tích dữ liệu chữ...</div>
                     <div id="grid-background"></div>
-                    <div><button id="animate-btn">▶ Xem thứ tự nét</button><button id="quiz-btn">✍️ Tự luyện (Chế độ Quiz)</button></div>
+                    <div><button class="btn-action" id="animate-btn">▶ Xem thứ tự nét</button><button class="btn-action" id="quiz-btn">✍️ Tự luyện (Chế độ Quiz)</button></div>
                     <h4 id="feedback" style="color: #d32f2f; margin-top: 10px; height: 20px;"></h4>
                 </div>
                 <script>
                     var writer = HanziWriter.create('grid-background', '{char_to_draw}', {{
                         width: 450, height: 450, padding: 20, showOutline: true, 
-                        strokeAnimationSpeed: 1, delayBetweenStrokes: 100, radicalsColor: '#168F16'
+                        strokeAnimationSpeed: 1, delayBetweenStrokes: 100, 
+                        radicalColor: '#E03C31', strokeColor: '#333333' /* Đổi màu bộ thủ thành Đỏ */
                     }});
+                    
+                    /* Tự động lấy số nét và báo vị trí bộ thủ */
+                    writer.characterDataPromise.then(function(data) {{
+                        document.getElementById('char-info-box').innerHTML = "🟢 <b>Tổng số nét:</b> " + data.strokes.length + " nét &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 🔴 <b>Bộ thủ:</b> Là phần được tô <span style='color:#E03C31; font-weight:bold;'>MÀU ĐỎ</span>";
+                    }});
+
                     document.getElementById('animate-btn').addEventListener('click', function() {{ writer.animateCharacter(); }});
                     document.getElementById('quiz-btn').addEventListener('click', function() {{
                         document.getElementById('feedback').innerText = "Bắt đầu vẽ! Nếu vẽ sai thứ tự nét, hệ thống sẽ báo.";
@@ -183,9 +192,9 @@ elif menu == "Luyện viết":
                     }});
                 </script>
                 """
-                components.html(html_code, height=600)
+                components.html(html_code, height=650)
 
-        # TAB 2: FREE DRAW (BẢNG HTML5 CANVAS MƯỢT MÀ)
+        # TAB 2: FREE DRAW (BẢNG CANVAS CÓ NÚT HOÀN TÁC)
         elif write_mode == "🖌️ Viết tự do (Bút thư pháp)":
             col_settings, col_canvas = st.columns([1, 2])
             with col_settings:
@@ -200,25 +209,56 @@ elif menu == "Luyện viết":
                     .canvas-container {{ display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }}
                     #draw-canvas {{
                         width: 500px; height: 500px;
-                        touch-action: none; /* Tránh bị cuộn trang khi vẽ trên iPad */
+                        touch-action: none; 
                         {css_style}
                     }}
-                    .btn-clear {{ margin-top: 15px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background-color: #f0f2f6; font-weight: bold; }}
-                    .btn-clear:hover {{ background-color: #e0e0e0; }}
+                    .btn-action {{ padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background-color: #f0f2f6; font-weight: bold; }}
+                    .btn-action:hover {{ background-color: #e0e0e0; }}
                 </style>
                 <div class="canvas-container">
                     <canvas id="draw-canvas" width="500" height="500"></canvas>
-                    <button class="btn-clear" onclick="clearCanvas()">🗑️ Xóa bản vẽ</button>
+                    <div style="margin-top: 15px; display: flex; gap: 15px;">
+                        <button class="btn-action" onclick="undoCanvas()">↩️ Hoàn tác</button>
+                        <button class="btn-action" onclick="clearCanvas()">🗑️ Xóa toàn bộ</button>
+                    </div>
                 </div>
                 <script>
                     const canvas = document.getElementById('draw-canvas');
                     const ctx = canvas.getContext('2d');
                     let isDrawing = false;
+                    let undoStack = []; // Mảng lưu trữ các nét vẽ
                     
                     ctx.strokeStyle = '{stroke_color}';
                     ctx.lineWidth = {stroke_width};
                     ctx.lineCap = 'round';
                     ctx.lineJoin = 'round';
+
+                    // Lưu trạng thái canvas vào Stack
+                    function saveState() {{
+                        if (undoStack.length > 30) undoStack.shift(); // Chỉ lưu 30 nét gần nhất để nhẹ RAM
+                        undoStack.push(canvas.toDataURL());
+                    }}
+
+                    // Hàm Hoàn tác
+                    function undoCanvas() {{
+                        if (undoStack.length > 0) {{
+                            let imgData = undoStack.pop();
+                            let img = new Image();
+                            img.src = imgData;
+                            img.onload = function() {{
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                ctx.drawImage(img, 0, 0);
+                            }}
+                        }} else {{
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        }}
+                    }}
+
+                    // Hàm Xóa toàn bộ
+                    function clearCanvas() {{ 
+                        saveState(); 
+                        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+                    }}
 
                     function getPos(evt) {{
                         const rect = canvas.getBoundingClientRect();
@@ -232,6 +272,7 @@ elif menu == "Luyện viết":
                     }}
 
                     function start(e) {{
+                        saveState(); // Lưu trước khi vẽ nét mới
                         isDrawing = true;
                         const pos = getPos(e);
                         ctx.beginPath(); ctx.moveTo(pos.x, pos.y); ctx.lineTo(pos.x, pos.y); ctx.stroke();
@@ -254,11 +295,9 @@ elif menu == "Luyện viết":
                     canvas.addEventListener('touchmove', draw, {{passive: false}});
                     canvas.addEventListener('touchend', stop, {{passive: false}});
                     canvas.addEventListener('touchcancel', stop, {{passive: false}});
-
-                    function clearCanvas() {{ ctx.clearRect(0, 0, canvas.width, canvas.height); }}
                 </script>
                 """
-                components.html(html_code, height=600)
+                components.html(html_code, height=650)
 
 # ----------------- CHỨC NĂNG 5: ĐỀ THI THỬ -----------------
 elif menu == "Đề thi thử Mini":

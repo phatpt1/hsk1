@@ -14,7 +14,7 @@ st.set_page_config(page_title="App Học HSK 1", layout="wide")
 @st.cache_data
 def load_data():
     try:
-        return pd.read_csv("hsk1_vocab_final.csv")
+        return pd.read_csv("hsk1_vocab.csv")
     except Exception:
         st.error("Lỗi: Chưa tìm thấy file hsk1_vocab.csv. Hãy đảm bảo bạn đã đẩy file này lên GitHub.")
         return pd.DataFrame(columns=["STT", "Tiếng Trung", "Pinyin", "Từ loại", "Dịch nghĩa"])

@@ -15,6 +15,7 @@ st.set_page_config(page_title="App Học HSK 1", layout="wide")
 @st.cache_data
 def load_data():
     try:
+        # Đã đổi lại tên file thành hsk1_vocab.csv theo yêu cầu
         return pd.read_csv("hsk1_vocab.csv")
     except Exception:
         st.error("Lỗi: Chưa tìm thấy file hsk1_vocab.csv. Hãy đảm bảo bạn đã đẩy file này lên GitHub.")
@@ -82,6 +83,8 @@ elif menu == "Luyện nghe":
 # ----------------- CHỨC NĂNG 3: NGỮ PHÁP -----------------
 elif menu == "Ngữ pháp & Mẫu câu":
     st.header("Ngữ pháp HSK 1 Trọng tâm")
+    
+    # Ở đây dùng tabs cho lý thuyết thì không bị lỗi gì cả
     tab1, tab2, tab3 = st.tabs(["1. Câu chữ 是", "2. Câu hỏi với 吗", "3. Phủ định 不 / 没"])
     
     with tab1:
@@ -124,10 +127,15 @@ elif menu == "Luyện viết":
             create_audio_button(word_to_draw, "🔊 Phát âm")
 
         st.divider()
-        tab_quiz, tab_free = st.tabs(["✍️ Viết theo mẫu (Chấm điểm nét)", "🖌️ Viết tự do (Bút thư pháp)"])
         
-        # TAB 1: HANZI WRITER
-        with tab_quiz:
+        # Bỏ st.tabs, dùng st.radio để fix lỗi tàng hình Canvas
+        write_mode = st.radio(
+            "Chọn chế độ luyện viết:",
+            ["✍️ Viết theo mẫu (Chấm điểm nét)", "🖌️ Viết tự do (Bút thư pháp)"],
+            horizontal=True
+        )
+        
+        if write_mode == "✍️ Viết theo mẫu (Chấm điểm nét)":
             char_to_draw = word_to_draw[0]
             if len(word_to_draw) > 1:
                 st.write("**Chọn từng Hán tự để tập viết theo chuẩn:**")
@@ -191,18 +199,16 @@ elif menu == "Luyện viết":
             """
             components.html(html_code, height=450)
 
-        # TAB 2: FREE DRAW CANVAS
-        with tab_free:
+        elif write_mode == "🖌️ Viết tự do (Bút thư pháp)":
             st.write("Sử dụng Apple Pencil hoặc chuột để phác thảo tự do.")
             col_settings, col_canvas = st.columns([1, 2])
             
             with col_settings:
                 stroke_width = st.slider("🖌️ Độ dày nét bút", min_value=1, max_value=30, value=8, step=1)
                 stroke_color = st.color_picker("🎨 Màu mực", "#000000")
-                st.info("💡 Không gian giấy vẽ nằm ở khối màu xám ngay bên cạnh nha!")
             
             with col_canvas:
-                # Đã thêm background_color="#F0F2F6" (xám nhạt) để lộ rõ không gian vẽ
+                # Trực tiếp render canvas ra ngoài, không bọc qua tab nào nữa
                 st_canvas(
                     fill_color="rgba(255, 165, 0, 0.3)",
                     stroke_width=stroke_width,

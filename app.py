@@ -4,6 +4,7 @@ from gtts import gTTS
 import base64
 import io
 import hashlib
+import random
 import streamlit.components.v1 as components
 from streamlit_drawable_canvas import st_canvas
 
@@ -51,7 +52,7 @@ df = load_data()
 st.sidebar.title("Chức năng HSK 1")
 menu = st.sidebar.radio(
     "Chọn bài học", 
-    ["Từ vựng", "Luyện nghe", "Ngữ pháp & Mẫu câu", "Luyện viết"]
+    ["Từ vựng", "Luyện nghe", "Ngữ pháp & Mẫu câu", "Luyện viết", "Đề thi thử Mini"]
 )
 
 # ----------------- CHỨC NĂNG 1: TỪ VỰNG -----------------
@@ -68,7 +69,6 @@ elif menu == "Luyện nghe":
         selected_label = st.selectbox("Tìm hoặc chọn từ để nghe phát âm:", df["Label"])
         word_info = df[df["Label"] == selected_label].iloc[0]
         
-        # Giao diện chữ Hán siêu to, kèm Pinyin và Nghĩa
         html_display = f"""
         <div style='text-align: center; padding: 20px; background-color: #f9f9f9; border-radius: 15px;'>
             <span style='font-size: 150px; color: #E03C31; line-height: 1.2; font-weight: bold;'>{word_info['Tiếng Trung']}</span><br>
@@ -124,8 +124,6 @@ elif menu == "Luyện viết":
             create_audio_button(word_to_draw, "🔊 Phát âm")
 
         st.divider()
-        
-        # Chia làm 2 chế độ viết
         tab_quiz, tab_free = st.tabs(["✍️ Viết theo mẫu (Chấm điểm nét)", "🖌️ Viết tự do (Bút thư pháp)"])
         
         # TAB 1: HANZI WRITER
@@ -196,21 +194,88 @@ elif menu == "Luyện viết":
         # TAB 2: FREE DRAW CANVAS
         with tab_free:
             st.write("Sử dụng Apple Pencil hoặc chuột để phác thảo tự do.")
-            
             col_settings, col_canvas = st.columns([1, 2])
+            
             with col_settings:
-                stroke_width = st.slider("🖌️ Độ dày nét bút", min_value=1, max_value=30, value=8, step=1, 
-                                         help="Tăng giảm độ dày để tạo hiệu ứng thanh đậm của bút thư pháp.")
+                stroke_width = st.slider("🖌️ Độ dày nét bút", min_value=1, max_value=30, value=8, step=1)
                 stroke_color = st.color_picker("🎨 Màu mực", "#000000")
+                st.info("💡 Không gian giấy vẽ nằm ở khối màu xám ngay bên cạnh nha!")
             
             with col_canvas:
+                # Đã thêm background_color="#F0F2F6" (xám nhạt) để lộ rõ không gian vẽ
                 st_canvas(
                     fill_color="rgba(255, 165, 0, 0.3)",
                     stroke_width=stroke_width,
                     stroke_color=stroke_color,
-                    background_color="#FFFFFF",
+                    background_color="#F0F2F6",
                     height=350,
                     width=350,
                     drawing_mode="freedraw",
                     key="canvas_freedraw",
                 )
+
+# ----------------- CHỨC NĂNG 5: ĐỀ THI THỬ -----------------
+elif menu == "Đề thi thử Mini":
+    st.header("📝 Đề Thi Thử HSK 1 (Trắc Nghiệm)")
+    st.write("Kiểm tra phản xạ từ vựng. Hệ thống sẽ bốc ngẫu nhiên 10 câu hỏi từ 500 từ HSK 1.")
+    
+    if not df.empty:
+        # Khởi tạo trạng thái phiên (Session State) để giữ nguyên đề thi khi chọn đáp án
+        if 'quiz_data' not in st.session_state:
+            st.session_state.quiz_data = []
+        if 'quiz_submitted' not in st.session_state:
+            st.session_state.quiz_submitted = False
+            
+        # Nút tạo đề mới
+        if st.button("🔄 Tạo đề thi mới", type="primary") or not st.session_state.quiz_data:
+            sample_df = df.sample(10)
+            questions = []
+            for _, row in sample_df.iterrows():
+                correct = str(row['Dịch nghĩa'])
+                # Lấy 3 đáp án sai ngẫu nhiên
+                wrong_choices = df[df['Dịch nghĩa'] != correct].sample(3)['Dịch nghĩa'].tolist()
+                options = wrong_choices + [correct]
+                random.shuffle(options)
+                
+                questions.append({
+                    "hanzi": row['Tiếng Trung'],
+                    "pinyin": row['Pinyin'],
+                    "options": options,
+                    "answer": correct
+                })
+            
+            st.session_state.quiz_data = questions
+            st.session_state.quiz_submitted = False
+            st.rerun()
+
+        # Hiển thị bài thi
+        if st.session_state.quiz_data:
+            user_answers = {}
+            for i, q in enumerate(st.session_state.quiz_data):
+                st.markdown(f"**Câu {i+1}:** Nghĩa của từ **<span style='color:red; font-size:22px;'>{q['hanzi']}</span>** ({q['pinyin']}) là gì?", unsafe_allow_html=True)
+                
+                # Render Radio button
+                user_answers[i] = st.radio(
+                    f"Đáp án câu {i+1}:", 
+                    q['options'], 
+                    key=f"q_{i}", 
+                    disabled=st.session_state.quiz_submitted,
+                    label_visibility="collapsed"
+                )
+                
+                # Hiển thị kết quả từng câu nếu đã nộp bài
+                if st.session_state.quiz_submitted:
+                    if user_answers[i] == q['answer']:
+                        st.success(f"✅ Chính xác! ({q['answer']})")
+                    else:
+                        st.error(f"❌ Sai. Đáp án đúng là: **{q['answer']}**")
+                st.write("---")
+
+            # Xử lý Nộp bài
+            if not st.session_state.quiz_submitted:
+                if st.button("📤 Nộp bài"):
+                    st.session_state.quiz_submitted = True
+                    st.rerun()
+            else:
+                score = sum(1 for i, q in enumerate(st.session_state.quiz_data) if user_answers[i] == q['answer'])
+                st.info(f"🏆 Bạn đã đúng **{score} / 10** câu!")

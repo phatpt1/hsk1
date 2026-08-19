@@ -6,8 +6,6 @@ import io
 import hashlib
 import random
 import streamlit.components.v1 as components
-from streamlit_drawable_canvas import st_canvas
-from PIL import Image, ImageDraw
 
 # Cấu hình trang
 st.set_page_config(page_title="App Học HSK 1", layout="wide")
@@ -47,66 +45,35 @@ def create_audio_button(text, button_text="🔊 Phát âm từ này"):
     except Exception as e:
         st.error("Không thể tải âm thanh.")
 
-# --- CÁC HÀM VẼ GIẤY LUYỆN CHỮ ---
-def draw_base_rect(draw, size, color='#d32f2f', width=6):
-    draw.rectangle([0, 0, size-1, size-1], outline=color, width=width)
+# --- HÀM TẠO NỀN GIẤY SVG NÉT ĐỨT ---
+def get_grid_css(grid_type, size=450):
+    border = "border: 4px solid #d32f2f; border-radius: 8px;"
+    svg = ""
+    
+    if grid_type == "Điền tự cách (田)":
+        svg = f"""<svg width="{size}" height="{size}" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="{size/2}" x2="{size}" y2="{size/2}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8" /><line x1="{size/2}" y1="0" x2="{size/2}" y2="{size}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8" /></svg>"""
+    elif grid_type == "Mễ tự cách (米)":
+        svg = f"""<svg width="{size}" height="{size}" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="{size/2}" x2="{size}" y2="{size/2}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8" /><line x1="{size/2}" y1="0" x2="{size/2}" y2="{size}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8" /><line x1="0" y1="0" x2="{size}" y2="{size}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8" /><line x1="0" y1="{size}" x2="{size}" y2="0" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8" /></svg>"""
+    elif grid_type == "Cửu cung cách (九宫)":
+        s3 = size/3; s6 = size*2/3
+        svg = f"""<svg width="{size}" height="{size}" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="{s3}" x2="{size}" y2="{s3}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8"/><line x1="0" y1="{s6}" x2="{size}" y2="{s6}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8"/><line x1="{s3}" y1="0" x2="{s3}" y2="{size}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8"/><line x1="{s6}" y1="0" x2="{s6}" y2="{size}" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8"/></svg>"""
+    elif grid_type == "Hồi tự cách (回)":
+        s2 = size/2; m = size/5; im = size - 2*m
+        svg = f"""<svg width="{size}" height="{size}" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="{s2}" x2="{size}" y2="{s2}" stroke="#e0e0e0" stroke-width="2" stroke-dasharray="8,8" /><line x1="{s2}" y1="0" x2="{s2}" y2="{size}" stroke="#e0e0e0" stroke-width="2" stroke-dasharray="8,8" /><rect x="{m}" y="{m}" width="{im}" height="{im}" fill="none" stroke="#e0e0e0" stroke-width="3" stroke-dasharray="8,8" /></svg>"""
+    elif grid_type == "Kẻ ngang (Line)":
+        lines = "".join([f'<line x1="0" y1="{i}" x2="{size}" y2="{i}" stroke="#e0e0e0" stroke-width="2" />' for i in range(50, int(size), 50)])
+        svg = f"""<svg width="{size}" height="{size}" xmlns="http://www.w3.org/2000/svg">{lines}</svg>"""
+        border = "border: 2px solid #ccc; border-radius: 4px;"
+    elif grid_type == "Giấy trắng":
+        border = "border: 2px solid #ccc; border-radius: 4px;"
 
-# 1. Điền tự cách (田字格)
-def create_tianzige_bg(size=350):
-    img = Image.new('RGB', (size, size), color='#ffffff')
-    draw = ImageDraw.Draw(img)
-    mid = size // 2
-    draw.line([(0, mid), (size, mid)], fill='#e0e0e0', width=3)
-    draw.line([(mid, 0), (mid, size)], fill='#e0e0e0', width=3)
-    draw_base_rect(draw, size)
-    return img
+    if svg:
+        b64 = base64.b64encode(svg.encode('utf-8')).decode()
+        bg_image = f"url('data:image/svg+xml;base64,{b64}')"
+    else:
+        bg_image = "none"
 
-# 2. Mễ tự cách (米字格)
-def create_mizige_bg(size=350):
-    img = Image.new('RGB', (size, size), color='#ffffff')
-    draw = ImageDraw.Draw(img)
-    mid = size // 2
-    draw.line([(0, mid), (size, mid)], fill='#e0e0e0', width=3)
-    draw.line([(mid, 0), (mid, size)], fill='#e0e0e0', width=3)
-    draw.line([(0, 0), (size, size)], fill='#e0e0e0', width=3)
-    draw.line([(0, size), (size, 0)], fill='#e0e0e0', width=3)
-    draw_base_rect(draw, size)
-    return img
-
-# 3. Cửu cung cách (九宫格)
-def create_jiugongge_bg(size=350):
-    img = Image.new('RGB', (size, size), color='#ffffff')
-    draw = ImageDraw.Draw(img)
-    step = size // 3
-    draw.line([(0, step), (size, step)], fill='#e0e0e0', width=3)
-    draw.line([(0, step*2), (size, step*2)], fill='#e0e0e0', width=3)
-    draw.line([(step, 0), (step, size)], fill='#e0e0e0', width=3)
-    draw.line([(step*2, 0), (step*2, size)], fill='#e0e0e0', width=3)
-    draw_base_rect(draw, size)
-    return img
-
-# 4. Hồi tự cách (回字格)
-def create_huizige_bg(size=350):
-    img = Image.new('RGB', (size, size), color='#ffffff')
-    draw = ImageDraw.Draw(img)
-    margin = size // 5
-    draw.line([(0, size//2), (size, size//2)], fill='#e0e0e0', width=2)
-    draw.line([(size//2, 0), (size//2, size)], fill='#e0e0e0', width=2)
-    draw.rectangle([margin, margin, size-margin, size-margin], outline='#e0e0e0', width=3)
-    draw_base_rect(draw, size)
-    return img
-
-# 5. Phương cách (方格)
-def create_fangge_bg(size=350):
-    img = Image.new('RGB', (size, size), color='#ffffff')
-    draw = ImageDraw.Draw(img)
-    draw_base_rect(draw, size)
-    return img
-
-# 6. Giấy trắng tự do
-def create_blank_bg(size=350):
-    img = Image.new('RGB', (size, size), color='#ffffff')
-    return img
+    return f"background-image: {bg_image}; background-color: #ffffff; {border}"
 
 # ================= GIAO DIỆN CHÍNH =================
 df = load_data()
@@ -145,26 +112,19 @@ elif menu == "Luyện nghe":
 elif menu == "Ngữ pháp & Mẫu câu":
     st.header("Ngữ pháp HSK 1 Trọng tâm")
     tab1, tab2, tab3 = st.tabs(["1. Câu chữ 是", "2. Câu hỏi với 吗", "3. Phủ định 不 / 没"])
-    
     with tab1:
-        st.subheader("Cấu trúc: Chủ ngữ + 是 (shì) + Danh từ")
         st.info("Ví dụ:\n- 我 是 学生。(Tôi là học sinh.)\n- 他 是 老师。(Ông ấy là giáo viên.)")
     with tab2:
-        st.subheader("Cấu trúc: Câu trần thuật + 吗 (ma) ?")
         st.info("Ví dụ:\n- 你 爱 我 吗？(Bạn có yêu tôi không?)\n- 她 是 护士 吗？(Cô ấy có phải là y tá không?)")
     with tab3:
-        st.subheader("Phủ định với 不 (bù) và 没 (méi)")
-        st.info("Ví dụ:\n- 我 不 吃 肉。(Tôi không ăn thịt - thói quen.)\n- 我 没 吃饭。(Tôi chưa ăn cơm - sự việc.)")
-
+        st.info("Ví dụ:\n- 我 不 吃 肉。(Tôi không ăn thịt.)\n- 我 没 吃饭。(Tôi chưa ăn cơm.)")
     st.divider()
-    st.subheader("Luyện ghép câu & Phát âm")
     user_sentence = st.text_input("Gõ câu tiếng Trung của bạn tại đây:")
-    if user_sentence:
-        create_audio_button(user_sentence, "🔊 Nghe câu này")
+    if user_sentence: create_audio_button(user_sentence, "🔊 Nghe câu này")
 
 # ----------------- CHỨC NĂNG 4: LUYỆN VIẾT -----------------
 elif menu == "Luyện viết":
-    st.header("Luyện Viết Chữ Hán")
+    st.header("Luyện Viết Chữ Hán (Phóng to 150%)")
     
     if not df.empty:
         df['Label'] = df['STT'].astype(str) + ". " + df['Tiếng Trung'] + " (" + df['Pinyin'] + ")"
@@ -181,53 +141,34 @@ elif menu == "Luyện viết":
         st.divider()
         write_mode = st.radio("Chọn chế độ luyện viết:", ["✍️ Viết theo mẫu (Chấm điểm nét)", "🖌️ Viết tự do (Bút thư pháp)"], horizontal=True)
         
+        # TAB 1: HANZI WRITER
         if write_mode == "✍️ Viết theo mẫu (Chấm điểm nét)":
             col_settings, col_writer = st.columns([1, 2])
-            
             with col_settings:
                 if len(word_to_draw) > 1:
                     char_to_draw = st.radio("Chọn Hán tự:", list(word_to_draw), horizontal=True)
-                else:
-                    char_to_draw = word_to_draw[0]
+                else: char_to_draw = word_to_draw[0]
                 
-                paper_type_quiz = st.selectbox("📝 Chọn loại giấy:", ["Điền tự cách (田)", "Mễ tự cách (米)", "Phương cách (方)", "Giấy trắng"], key="quiz_paper")
-                
-                # Render CSS tùy loại giấy
-                if paper_type_quiz == "Điền tự cách (田)":
-                    bg_css = "linear-gradient(to bottom, transparent 49%, #e0e0e0 49%, #e0e0e0 51%, transparent 51%), linear-gradient(to right, transparent 49%, #e0e0e0 49%, #e0e0e0 51%, transparent 51%)"
-                elif paper_type_quiz == "Mễ tự cách (米)":
-                    bg_css = "linear-gradient(to bottom, transparent 49%, #e0e0e0 49%, #e0e0e0 51%, transparent 51%), linear-gradient(to right, transparent 49%, #e0e0e0 49%, #e0e0e0 51%, transparent 51%), linear-gradient(45deg, transparent 49.5%, #e0e0e0 49.5%, #e0e0e0 50.5%, transparent 50.5%), linear-gradient(-45deg, transparent 49.5%, #e0e0e0 49.5%, #e0e0e0 50.5%, transparent 50.5%)"
-                elif paper_type_quiz == "Phương cách (方)":
-                    bg_css = "none"
-                else:
-                    bg_css = "none"
+                paper_type_quiz = st.selectbox("📝 Chọn giấy (Cỡ 450px):", ["Điền tự cách (田)", "Mễ tự cách (米)", "Cửu cung cách (九宫)", "Hồi tự cách (回)", "Phương cách (方)", "Giấy trắng"], key="quiz_paper")
+                css_style = get_grid_css(paper_type_quiz, size=450)
 
             with col_writer:
-                border_css = "4px solid #d32f2f" if paper_type_quiz != "Giấy trắng" else "none"
                 html_code = f"""
                 <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
                 <style>
                     .hanzi-container {{ display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }}
-                    #grid-background {{
-                        width: 300px; height: 300px; 
-                        background-color: #ffffff;
-                        background-image: {bg_css};
-                        border: {border_css}; border-radius: 8px; margin-bottom: 15px;
-                    }}
-                    button {{ margin: 5px; padding: 10px 15px; font-size: 15px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; }}
-                    #quiz-btn {{ background-color: #168F16; color: white; border: none; }}
+                    #grid-background {{ width: 450px; height: 450px; margin-bottom: 15px; {css_style} }}
+                    button {{ margin: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; }}
+                    #quiz-btn {{ background-color: #168F16; color: white; border: none; font-weight: bold; }}
                 </style>
                 <div class="hanzi-container">
                     <div id="grid-background"></div>
-                    <div>
-                        <button id="animate-btn">▶ Xem thứ tự nét</button>
-                        <button id="quiz-btn">✍️ Tự luyện (Chế độ Quiz)</button>
-                    </div>
+                    <div><button id="animate-btn">▶ Xem thứ tự nét</button><button id="quiz-btn">✍️ Tự luyện (Chế độ Quiz)</button></div>
                     <h4 id="feedback" style="color: #d32f2f; margin-top: 10px; height: 20px;"></h4>
                 </div>
                 <script>
                     var writer = HanziWriter.create('grid-background', '{char_to_draw}', {{
-                        width: 300, height: 300, padding: 15, showOutline: true, 
+                        width: 450, height: 450, padding: 20, showOutline: true, 
                         strokeAnimationSpeed: 1, delayBetweenStrokes: 100, radicalsColor: '#168F16'
                     }});
                     document.getElementById('animate-btn').addEventListener('click', function() {{ writer.animateCharacter(); }});
@@ -235,47 +176,89 @@ elif menu == "Luyện viết":
                         document.getElementById('feedback').innerText = "Bắt đầu vẽ! Nếu vẽ sai thứ tự nét, hệ thống sẽ báo.";
                         document.getElementById('feedback').style.color = "#333";
                         writer.quiz({{
-                            onMistake: function() {{ document.getElementById('feedback').innerText = "Sai nét hoặc sai chiều!"; document.getElementById('feedback').style.color = "red"; }},
+                            onMistake: function() {{ document.getElementById('feedback').innerText = "Sai nét hoặc chiều!"; document.getElementById('feedback').style.color = "red"; }},
                             onCorrectStroke: function(strokeData) {{ document.getElementById('feedback').innerText = "Nét " + strokeData.strokeNum + " chính xác!"; document.getElementById('feedback').style.color = "blue"; }},
                             onComplete: function() {{ document.getElementById('feedback').innerText = "🎉 Chúc mừng! Bạn đã viết đúng."; document.getElementById('feedback').style.color = "green"; }}
                         }});
                     }});
                 </script>
                 """
-                components.html(html_code, height=450)
+                components.html(html_code, height=600)
 
+        # TAB 2: FREE DRAW (BẢNG HTML5 CANVAS MƯỢT MÀ)
         elif write_mode == "🖌️ Viết tự do (Bút thư pháp)":
             col_settings, col_canvas = st.columns([1, 2])
             with col_settings:
-                paper_type_free = st.selectbox("📝 Chọn loại giấy:", [
-                    "Điền tự cách (田)", 
-                    "Mễ tự cách (米)", 
-                    "Cửu cung cách (九宫)", 
-                    "Hồi tự cách (回)", 
-                    "Phương cách (方)", 
-                    "Giấy trắng"
-                ], key="free_paper")
-                stroke_width = st.slider("🖌️ Độ dày nét bút", min_value=1, max_value=30, value=8, step=1)
+                paper_type_free = st.selectbox("📝 Chọn giấy (Cỡ 500px):", ["Điền tự cách (田)", "Mễ tự cách (米)", "Cửu cung cách (九宫)", "Hồi tự cách (回)", "Phương cách (方)", "Kẻ ngang (Line)", "Giấy trắng"], key="free_paper")
+                stroke_width = st.slider("🖌️ Độ dày nét bút", min_value=1, max_value=30, value=12, step=1)
                 stroke_color = st.color_picker("🎨 Màu mực", "#333333")
             
             with col_canvas:
-                if paper_type_free == "Điền tự cách (田)": bg_image = create_tianzige_bg(350)
-                elif paper_type_free == "Mễ tự cách (米)": bg_image = create_mizige_bg(350)
-                elif paper_type_free == "Cửu cung cách (九宫)": bg_image = create_jiugongge_bg(350)
-                elif paper_type_free == "Hồi tự cách (回)": bg_image = create_huizige_bg(350)
-                elif paper_type_free == "Phương cách (方)": bg_image = create_fangge_bg(350)
-                else: bg_image = create_blank_bg(350)
+                css_style = get_grid_css(paper_type_free, size=500)
+                html_code = f"""
+                <style>
+                    .canvas-container {{ display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }}
+                    #draw-canvas {{
+                        width: 500px; height: 500px;
+                        touch-action: none; /* Tránh bị cuộn trang khi vẽ trên iPad */
+                        {css_style}
+                    }}
+                    .btn-clear {{ margin-top: 15px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background-color: #f0f2f6; font-weight: bold; }}
+                    .btn-clear:hover {{ background-color: #e0e0e0; }}
+                </style>
+                <div class="canvas-container">
+                    <canvas id="draw-canvas" width="500" height="500"></canvas>
+                    <button class="btn-clear" onclick="clearCanvas()">🗑️ Xóa bản vẽ</button>
+                </div>
+                <script>
+                    const canvas = document.getElementById('draw-canvas');
+                    const ctx = canvas.getContext('2d');
+                    let isDrawing = false;
                     
-                st_canvas(
-                    fill_color="rgba(255, 165, 0, 0.3)",
-                    stroke_width=stroke_width,
-                    stroke_color=stroke_color,
-                    background_image=bg_image,
-                    height=350,
-                    width=350,
-                    drawing_mode="freedraw",
-                    key="canvas_freedraw",
-                )
+                    ctx.strokeStyle = '{stroke_color}';
+                    ctx.lineWidth = {stroke_width};
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+
+                    function getPos(evt) {{
+                        const rect = canvas.getBoundingClientRect();
+                        let clientX = evt.clientX;
+                        let clientY = evt.clientY;
+                        if (evt.touches && evt.touches.length > 0) {{
+                            clientX = evt.touches[0].clientX;
+                            clientY = evt.touches[0].clientY;
+                        }}
+                        return {{ x: clientX - rect.left, y: clientY - rect.top }};
+                    }}
+
+                    function start(e) {{
+                        isDrawing = true;
+                        const pos = getPos(e);
+                        ctx.beginPath(); ctx.moveTo(pos.x, pos.y); ctx.lineTo(pos.x, pos.y); ctx.stroke();
+                        e.preventDefault();
+                    }}
+                    function draw(e) {{
+                        if (!isDrawing) return;
+                        const pos = getPos(e);
+                        ctx.lineTo(pos.x, pos.y); ctx.stroke();
+                        e.preventDefault();
+                    }}
+                    function stop(e) {{
+                        if (isDrawing) {{ ctx.stroke(); ctx.closePath(); isDrawing = false; }}
+                        e.preventDefault();
+                    }}
+
+                    canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', draw);
+                    canvas.addEventListener('mouseup', stop); canvas.addEventListener('mouseout', stop);
+                    canvas.addEventListener('touchstart', start, {{passive: false}});
+                    canvas.addEventListener('touchmove', draw, {{passive: false}});
+                    canvas.addEventListener('touchend', stop, {{passive: false}});
+                    canvas.addEventListener('touchcancel', stop, {{passive: false}});
+
+                    function clearCanvas() {{ ctx.clearRect(0, 0, canvas.width, canvas.height); }}
+                </script>
+                """
+                components.html(html_code, height=600)
 
 # ----------------- CHỨC NĂNG 5: ĐỀ THI THỬ -----------------
 elif menu == "Đề thi thử Mini":

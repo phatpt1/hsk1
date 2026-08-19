@@ -5,12 +5,12 @@ import base64
 import io
 import hashlib
 import streamlit.components.v1 as components
+from streamlit_drawable_canvas import st_canvas
 
 # Cấu hình trang
 st.set_page_config(page_title="App Học HSK 1", layout="wide")
 
 # ================= HÀM HỖ TRỢ =================
-# Hàm 1: Nạp dữ liệu từ file CSV chuẩn
 @st.cache_data
 def load_data():
     try:
@@ -19,7 +19,6 @@ def load_data():
         st.error("Lỗi: Chưa tìm thấy file hsk1_vocab.csv. Hãy đảm bảo bạn đã đẩy file này lên GitHub.")
         return pd.DataFrame(columns=["STT", "Tiếng Trung", "Pinyin", "Từ loại", "Dịch nghĩa"])
 
-# Hàm 2: Tạo nút Audio ẩn thanh player (Dùng HTML/JS)
 def create_audio_button(text, button_text="🔊 Phát âm từ này"):
     if not text: return
     try:
@@ -29,19 +28,20 @@ def create_audio_button(text, button_text="🔊 Phát âm từ này"):
         fp.seek(0)
         b64 = base64.b64encode(fp.read()).decode()
         
-        # Tạo ID ngẫu nhiên để không bị trùng lặp âm thanh
         html_id = "audio_" + hashlib.md5(text.encode()).hexdigest()
         
         html = f"""
-        <audio id="{html_id}" src="data:audio/mp3;base64,{b64}"></audio>
-        <button onclick="document.getElementById('{html_id}').play()" 
-                style="padding: 10px 20px; font-size: 16px; cursor: pointer; 
-                       background-color: #ff4b4b; color: white; border: none; 
-                       border-radius: 6px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            {button_text}
-        </button>
+        <div style="text-align: center; margin-top: 15px;">
+            <audio id="{html_id}" src="data:audio/mp3;base64,{b64}"></audio>
+            <button onclick="document.getElementById('{html_id}').play()" 
+                    style="padding: 12px 25px; font-size: 18px; cursor: pointer; 
+                           background-color: #ff4b4b; color: white; border: none; 
+                           border-radius: 8px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                {button_text}
+            </button>
+        </div>
         """
-        components.html(html, height=60)
+        components.html(html, height=80)
     except Exception as e:
         st.error("Không thể tải âm thanh (lỗi kết nối).")
 
@@ -51,7 +51,7 @@ df = load_data()
 st.sidebar.title("Chức năng HSK 1")
 menu = st.sidebar.radio(
     "Chọn bài học", 
-    ["Từ vựng", "Luyện nghe", "Ngữ pháp & Mẫu câu", "Luyện viết (Hanzi Writer)"]
+    ["Từ vựng", "Luyện nghe", "Ngữ pháp & Mẫu câu", "Luyện viết"]
 )
 
 # ----------------- CHỨC NĂNG 1: TỪ VỰNG -----------------
@@ -66,16 +66,22 @@ elif menu == "Luyện nghe":
     if not df.empty:
         df['Label'] = df['STT'].astype(str) + ". " + df['Tiếng Trung'] + " (" + df['Pinyin'] + ")"
         selected_label = st.selectbox("Tìm hoặc chọn từ để nghe phát âm:", df["Label"])
-        selected_word = df.loc[df["Label"] == selected_label, "Tiếng Trung"].values[0]
+        word_info = df[df["Label"] == selected_label].iloc[0]
         
-        st.markdown(f"<h1 style='color: #E03C31;'>{selected_word}</h1>", unsafe_allow_html=True)
-        # Nút audio đã được thu gọn, không còn thanh kéo
-        create_audio_button(selected_word)
+        # Giao diện chữ Hán siêu to, kèm Pinyin và Nghĩa
+        html_display = f"""
+        <div style='text-align: center; padding: 20px; background-color: #f9f9f9; border-radius: 15px;'>
+            <span style='font-size: 150px; color: #E03C31; line-height: 1.2; font-weight: bold;'>{word_info['Tiếng Trung']}</span><br>
+            <span style='font-size: 35px; color: #333;'>[ {word_info['Pinyin']} ]</span><br>
+            <span style='font-size: 28px; color: #0066cc; font-weight: 500;'>Nghĩa: {word_info['Dịch nghĩa']}</span>
+        </div>
+        """
+        st.markdown(html_display, unsafe_allow_html=True)
+        create_audio_button(word_info['Tiếng Trung'])
 
 # ----------------- CHỨC NĂNG 3: NGỮ PHÁP -----------------
 elif menu == "Ngữ pháp & Mẫu câu":
     st.header("Ngữ pháp HSK 1 Trọng tâm")
-    
     tab1, tab2, tab3 = st.tabs(["1. Câu chữ 是", "2. Câu hỏi với 吗", "3. Phủ định 不 / 没"])
     
     with tab1:
@@ -101,39 +107,38 @@ elif menu == "Ngữ pháp & Mẫu câu":
         st.success(f"Câu của bạn: {user_sentence}")
         create_audio_button(user_sentence, "🔊 Nghe câu này")
 
-# ----------------- CHỨC NĂNG 4: LUYỆN VIẾT HANZI -----------------
-elif menu == "Luyện viết (Hanzi Writer)":
-    st.header("Luyện Viết Chữ Hán & Phân Tích Nét")
-    st.write("Sử dụng Apple Pencil hoặc chuột. Nền lưới điền tự cách (田字格) giúp bạn canh tỉ lệ.")
+# ----------------- CHỨC NĂNG 4: LUYỆN VIẾT -----------------
+elif menu == "Luyện viết":
+    st.header("Luyện Viết Chữ Hán")
     
     if not df.empty:
-        col1, col2 = st.columns([1, 2])
+        df['Label'] = df['STT'].astype(str) + ". " + df['Tiếng Trung'] + " (" + df['Pinyin'] + ")"
+        selected_label = st.selectbox("📌 Chọn từ vựng:", df["Label"])
+        word_info = df[df["Label"] == selected_label].iloc[0]
+        word_to_draw = str(word_info['Tiếng Trung'])
         
-        with col1:
-            df['Label'] = df['STT'].astype(str) + ". " + df['Tiếng Trung'] + " (" + df['Pinyin'] + ")"
-            selected_label = st.selectbox("Chọn từ vựng:", df["Label"])
-            
-            word_info = df[df["Label"] == selected_label].iloc[0]
-            word_to_draw = str(word_info['Tiếng Trung'])
-            
-            st.metric(label="Pinyin", value=word_info["Pinyin"])
-            st.metric(label="Nghĩa", value=word_info["Dịch nghĩa"])
+        col_info, col_audio = st.columns([2, 1])
+        with col_info:
+            st.markdown(f"**Pinyin:** {word_info['Pinyin']} &nbsp;&nbsp;|&nbsp;&nbsp; **Nghĩa:** {word_info['Dịch nghĩa']}")
+        with col_audio:
             create_audio_button(word_to_draw, "🔊 Phát âm")
-            
-            st.divider()
-            # Bắt lỗi nếu từ có 2 chữ trở lên (VD: 爸爸), cho phép chọn từng chữ để viết
+
+        st.divider()
+        
+        # Chia làm 2 chế độ viết
+        tab_quiz, tab_free = st.tabs(["✍️ Viết theo mẫu (Chấm điểm nét)", "🖌️ Viết tự do (Bút thư pháp)"])
+        
+        # TAB 1: HANZI WRITER
+        with tab_quiz:
             char_to_draw = word_to_draw[0]
             if len(word_to_draw) > 1:
-                st.write("**Chọn từng Hán tự để tập viết:**")
-                char_to_draw = st.radio("", list(word_to_draw), horizontal=True)
+                st.write("**Chọn từng Hán tự để tập viết theo chuẩn:**")
+                char_to_draw = st.radio("", list(word_to_draw), horizontal=True, key="hanzi_radio")
 
-        with col2:
-            # Tích hợp thư viện Hanzi Writer bằng HTML/JS
             html_code = f"""
             <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
             <style>
                 .hanzi-container {{ display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }}
-                /* Tạo lưới 田字格 làm background */
                 #grid-background {{
                     width: 300px; height: 300px; 
                     background-color: #fcfcfc;
@@ -142,9 +147,7 @@ elif menu == "Luyện viết (Hanzi Writer)":
                         linear-gradient(-45deg, transparent 49%, #e0e0e0 49%, #e0e0e0 51%, transparent 51%),
                         linear-gradient(to right, transparent 49%, #e0e0e0 49%, #e0e0e0 51%, transparent 51%),
                         linear-gradient(to bottom, transparent 49%, #e0e0e0 49%, #e0e0e0 51%, transparent 51%);
-                    border: 3px solid #d32f2f;
-                    border-radius: 8px;
-                    margin-bottom: 15px;
+                    border: 3px solid #d32f2f; border-radius: 8px; margin-bottom: 15px;
                 }}
                 button {{ margin: 5px; padding: 10px 15px; font-size: 15px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; }}
                 #quiz-btn {{ background-color: #168F16; color: white; border: none; }}
@@ -161,21 +164,18 @@ elif menu == "Luyện viết (Hanzi Writer)":
             
             <script>
                 var writer = HanziWriter.create('grid-background', '{char_to_draw}', {{
-                    width: 300, height: 300, padding: 15,
-                    showOutline: true, strokeAnimationSpeed: 1, delayBetweenStrokes: 100,
-                    radicalsColor: '#168F16' // Nhấn mạnh màu bộ thủ
+                    width: 300, height: 300, padding: 15, showOutline: true, 
+                    strokeAnimationSpeed: 1, delayBetweenStrokes: 100, radicalsColor: '#168F16'
                 }});
 
-                document.getElementById('animate-btn').addEventListener('click', function() {{
-                    writer.animateCharacter();
-                }});
+                document.getElementById('animate-btn').addEventListener('click', function() {{ writer.animateCharacter(); }});
 
                 document.getElementById('quiz-btn').addEventListener('click', function() {{
                     document.getElementById('feedback').innerText = "Bắt đầu vẽ! Nếu vẽ sai thứ tự nét, hệ thống sẽ báo.";
                     document.getElementById('feedback').style.color = "#333";
                     
                     writer.quiz({{
-                        onMistake: function(strokeData) {{
+                        onMistake: function() {{
                             document.getElementById('feedback').innerText = "Sai nét hoặc sai chiều! Hãy thử lại.";
                             document.getElementById('feedback').style.color = "red";
                         }},
@@ -183,7 +183,7 @@ elif menu == "Luyện viết (Hanzi Writer)":
                             document.getElementById('feedback').innerText = "Nét " + strokeData.strokeNum + " chính xác!";
                             document.getElementById('feedback').style.color = "blue";
                         }},
-                        onComplete: function(summaryData) {{
+                        onComplete: function() {{
                             document.getElementById('feedback').innerText = "🎉 Chúc mừng! Bạn đã viết đúng toàn bộ chữ này.";
                             document.getElementById('feedback').style.color = "green";
                         }}
@@ -192,3 +192,25 @@ elif menu == "Luyện viết (Hanzi Writer)":
             </script>
             """
             components.html(html_code, height=450)
+
+        # TAB 2: FREE DRAW CANVAS
+        with tab_free:
+            st.write("Sử dụng Apple Pencil hoặc chuột để phác thảo tự do.")
+            
+            col_settings, col_canvas = st.columns([1, 2])
+            with col_settings:
+                stroke_width = st.slider("🖌️ Độ dày nét bút", min_value=1, max_value=30, value=8, step=1, 
+                                         help="Tăng giảm độ dày để tạo hiệu ứng thanh đậm của bút thư pháp.")
+                stroke_color = st.color_picker("🎨 Màu mực", "#000000")
+            
+            with col_canvas:
+                st_canvas(
+                    fill_color="rgba(255, 165, 0, 0.3)",
+                    stroke_width=stroke_width,
+                    stroke_color=stroke_color,
+                    background_color="#FFFFFF",
+                    height=350,
+                    width=350,
+                    drawing_mode="freedraw",
+                    key="canvas_freedraw",
+                )
